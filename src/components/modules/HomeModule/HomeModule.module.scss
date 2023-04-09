@@ -1,0 +1,12 @@
+.container {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+}
+
+.container .toolbar {
+	color: white;
+	position: absolute;
+	top: 50px;
+	right: 50px;
+}
