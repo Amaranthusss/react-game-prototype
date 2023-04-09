@@ -1,8 +1,8 @@
 # [Full-Stack Web Application]
 
-## React / NextJS / ThreeJS Game Prototype [2023]
+## ReactJS / NextJS / ThreeJS Game Prototype [2023]
 
-This repository contains prototype of a simple game based on the ThreeJS.
+This repository contains prototype of a simple 3D game based on the ThreeJS.
 
 ## Main technologies:
 
@@ -10,7 +10,7 @@ This repository contains prototype of a simple game based on the ThreeJS.
 
 **NextJS** - Next.js is a React framework that gives you building blocks to create web applications. By framework, we mean Next.js handles the tooling and configuration needed for React, and provides additional structure, features, and optimizations for your application.
 
-**ThreeJS** - Cross-browser JavaScript library and application programming interface (API) used to create and display animated 3D computer graphics in a web browser using WebGL
+**ThreeJS** - Cross-browser JavaScript library and application programming interface (API) used to create and display animated 3D computer graphics in a web browser using WebGL.
 
 **@react-three/fiber** - React renderer for three.js.
 
