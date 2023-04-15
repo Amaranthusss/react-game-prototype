@@ -1,0 +1,12 @@
+$size: 150px;
+$boxShadow: 0px 0px 12px 0px rgb(114, 114, 114);
+
+.image {
+  position: relative;
+  width: $size;
+  height: $size;
+  border-radius: $size / 2;
+  -webkit-box-shadow: $boxShadow;
+  -moz-box-shadow: $boxShadow;
+  box-shadow: $boxShadow;
+}

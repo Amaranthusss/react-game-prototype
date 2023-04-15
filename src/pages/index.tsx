@@ -1,7 +1,12 @@
-import { HomeModule } from '@/components/modules/HomeModule/HomeModule'
+import Interface from '@/components/Interface/Interface'
+import Game from '@/components/Game/Game'
+import App from '@/components/App'
 
-const Home = (): JSX.Element => {
-  return <HomeModule />
+export default function Application(): JSX.Element {
+  return (
+    <>
+      <Game />
+      <Interface />
+    </>
+  )
 }
-
-export default Home

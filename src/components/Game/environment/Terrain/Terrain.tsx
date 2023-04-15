@@ -8,13 +8,10 @@ import { MathUtils, RepeatWrapping } from 'three'
 import { TerrainProps } from './Terrain.interface'
 import { Texture } from 'three'
 
+import { config } from './Terrain.config'
+
 export default function Terrain({ onContextMenu }: TerrainProps): JSX.Element {
-  const texs = useTexture([
-    '/textures/grassy/grassy_cobblestone_diff_2k.jpg',
-    '/textures/grassy/grassy_cobblestone_nor_gl_2k.jpg',
-    '/textures/grassy/grassy_cobblestone_rough_2k.jpg',
-    '/textures/grassy/grassy_cobblestone_ao_2k.jpg',
-  ])
+  const texs = useTexture(config.textures)
 
   useLayoutEffect(() => {
     for (const tex of texs) {
@@ -30,8 +27,9 @@ export default function Terrain({ onContextMenu }: TerrainProps): JSX.Element {
       <Circle
         onContextMenu={onContextMenu}
         receiveShadow
+        castShadow
         args={[15, 64, 64]}
-        rotation-x={-Math.PI / 2}
+        rotation-x={config.rotationX}
       >
         <meshStandardMaterial
           map={diffuse}
