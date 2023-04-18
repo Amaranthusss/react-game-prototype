@@ -4,7 +4,7 @@ import THREE from 'three'
 import _ from 'lodash'
 
 import { CharacterComponent } from '../units/Character/Character.interface'
-import { InitFcn } from '@/components/Game/hooks/useNavMesh'
+import { InitFcn } from '@/components/_Game/hooks/useNavMesh'
 
 export const useInitialization = (init: InitFcn) => {
   const onCharacterInitialized = useCallback(

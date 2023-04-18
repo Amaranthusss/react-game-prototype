@@ -3,23 +3,21 @@ import { create } from 'zustand'
 import * as THREE from 'three'
 import _ from 'lodash'
 
-import {
-  CreateUnitNewHero,
-  CreateUnitNewUnit,
-  FindFcn,
-  UnitsStore,
-} from './interface'
+import { CreateUnitNewHero, CreateUnitNewUnit } from './interface'
+import { FindFcn, UnitsStore } from './interface'
 import { Unit } from '@/interfaces/unit'
 import { Hero } from '@/interfaces/hero'
 
 const getDefaultUnitValues = (
   health: number,
   mana: number
-): Pick<Unit, 'maxHealth' | 'maxMana' | 'bonus'> => {
+): Pick<Unit, 'maxHealth' | 'maxMana' | 'bonus' | 'target' | 'targets'> => {
   return {
     maxHealth: health,
     maxMana: mana,
     bonus: [],
+    target: undefined,
+    targets: [],
   }
 }
 

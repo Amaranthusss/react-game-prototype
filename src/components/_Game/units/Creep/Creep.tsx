@@ -6,6 +6,7 @@ import { useUnitsStore } from '@/store/units/useUnitsStore'
 import * as THREE from 'three'
 import _ from 'lodash'
 
+import { CreateUnitFcn } from '@/store/units/interface'
 import { CreepProps } from './Creep.interface'
 import { Unit } from '@/interfaces/unit'
 
@@ -15,8 +16,10 @@ export function Creep({ groupProps, onInitialized }: CreepProps): JSX.Element {
   const groupRef = useRef<THREE.Group | null>(null)
   const meshRef = useRef<THREE.Mesh | null>(null)
 
+  const createUnit: CreateUnitFcn = useUnitsStore().createUnit
+
   useEffect((): void => {
-    useUnitsStore.getState().createUnit({
+    createUnit({
       id: unitId,
       name: 'Creep',
       position: [0, 0, 0],
@@ -26,7 +29,7 @@ export function Creep({ groupProps, onInitialized }: CreepProps): JSX.Element {
       mana: 100,
       movementSpeed: 2.5,
     })
-  }, [])
+  }, [unitId, createUnit])
 
   console.log('creep render')
 
