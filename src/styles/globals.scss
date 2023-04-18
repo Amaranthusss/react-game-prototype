@@ -1,5 +1,7 @@
+@import '/src/styles/theme.scss';
+
 body {
-  background-color: rgb(34, 34, 34);
+  background-color: $emptyColor;
   position: relative;
   height: 100vh;
   width: 100vw;

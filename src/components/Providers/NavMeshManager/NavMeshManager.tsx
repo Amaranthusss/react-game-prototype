@@ -1,8 +1,9 @@
 import { useFrame } from '@react-three/fiber'
+import { useFPS } from './hooks/useFPS'
 
-import * as YUKA from 'yuka'
 import _ from 'lodash'
 
+import { NavMeshManagerProps } from './NavMeshManager.interface'
 import { RootState } from '@react-three/fiber'
 
 import { navMeshContext } from '@/contexts/navMeshContext'
@@ -13,13 +14,7 @@ export function NavMeshManager({
   getCamera,
   getRenderer,
   getEntityManager,
-}: {
-  children: JSX.Element
-  getEntityManager: () => YUKA.EntityManager | null
-  getRenderer: () => RootState['gl']
-  getCamera: () => RootState['camera']
-  getScene: () => RootState['scene']
-}) {
+}: NavMeshManagerProps) {
   useFrame((state: RootState, delta: number) => {
     const entityManager = getEntityManager()
 
@@ -30,6 +25,8 @@ export function NavMeshManager({
     entityManager.update(delta)
     getRenderer().render(getScene(), getCamera())
   })
+
+  useFPS()
 
   return (
     <navMeshContext.Provider value={getEntityManager}>

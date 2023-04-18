@@ -1,12 +1,11 @@
-import Interface from '@/components/Interface/Interface'
-import Game from '@/components/Game/Game'
-import App from '@/components/App'
+import { UserInterface } from '@/components/UserInterface/UserInterface'
+import { Game } from '@/components/Game/Game'
 
 export default function Application(): JSX.Element {
   return (
     <>
       <Game />
-      <Interface />
+      <UserInterface />
     </>
   )
 }

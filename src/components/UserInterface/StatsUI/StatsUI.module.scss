@@ -1,0 +1,11 @@
+@import '/src/styles/theme.scss';
+
+.container {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background-color: $emptyColor;
+  padding-inline: $interfacePadding;
+  font-size: $interfaceFontSize;
+  color: white;
+}
