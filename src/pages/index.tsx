@@ -1,7 +1,11 @@
-import { HomeModule } from '@/components/modules/HomeModule/HomeModule'
+import { UserInterface } from '@/components/UserInterface/UserInterface'
+import { Game } from '@/components/Game/Game'
 
-const Home = (): JSX.Element => {
-  return <HomeModule />
+export default function Application(): JSX.Element {
+  return (
+    <>
+      <Game />
+      <UserInterface />
+    </>
+  )
 }
-
-export default Home

@@ -14,15 +14,21 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 
 **@react-three/fiber** - React renderer for three.js.
 
-**@react-three/drei** - A growing collection of useful helpers and fully functional, ready-made abstractions for @react-three/fiber. 
+**@react-three/drei** - A growing collection of useful helpers and fully functional, ready-made abstractions for @react-three/fiber.
 
-**@react-three/cannon** - React hooks for cannon-es (Lightweight 3D physics for the web).	
+**@react-three/cannon** - React hooks for cannon-es (Lightweight 3D physics for the web).
 
 **@react-three/postprocessing** - Postprocessing wrapper for @react-three/fiber.
 
 **Yuka** - A JavaScript library for developing Game AI.
 
 **Zustand** - A small, fast and scalable bearbones state-management solution using simplified flux principles.
+
+## References:
+
+### [GLTF/GLB to JSX](https://github.com/pmndrs/gltfjsx)
+
+`npx gltfjsx model.glb --transform`
 
 ## Planned technologies for a next steps:
 

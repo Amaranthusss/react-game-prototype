@@ -1,0 +1,15 @@
+@import '/src/styles/theme.scss';
+
+.container {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background-color: $emptyColor;
+  padding-inline: $interfacePadding;
+  font-size: $interfaceFontSize;
+  color: white;
+}
+
+.version {
+  font-style: italic;
+}

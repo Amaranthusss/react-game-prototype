@@ -1,73 +1,104 @@
-import { OrbitControls, Stage } from '@react-three/drei'
+import { OrbitControls, Stage, Stars } from '@react-three/drei'
 import { EffectComposer } from '@react-three/postprocessing'
+import { NavMeshManager } from '../Providers/NavMeshManager/NavMeshManager'
 import { Suspense } from 'react'
 import { Physics } from '@react-three/cannon'
 import { Canvas } from '@react-three/fiber'
 import { Lights } from './environment/Lights/Lights'
 import { Bloom } from '@react-three/postprocessing'
+import { Arena } from './environment/Arena/Arena'
+import { Creep } from './units/Creep/Creep'
 
-import { useCallback, useRef } from 'react'
-import { useComponent } from './hooks/useComponent'
+import { useInitialization } from './hooks/useInitialization'
+import { useCallback } from 'react'
+import { useNavMesh } from '@/components/Game/hooks/useNavMesh'
 
 import { lazy } from 'react'
+import _ from 'lodash'
 
 import { ThreeEvent } from '@react-three/fiber'
-import { GameProps } from './Game.interface'
+import { RootState } from '@react-three/fiber'
 
 import styles from './Game.module.scss'
 
-const Rogue = lazy(() => import('@/components/Game/characters/Rogue/Rogue'))
+const Rogue = lazy(() => import('@/components/Game/units/Character/Character'))
 
-const Terrain = lazy(
-  () => import('@/components/Game/environment/Terrain/Terrain')
-)
+export function Game(): JSX.Element {
+  const {
+    init,
+    getScene,
+    setScene,
+    getCamera,
+    setCamera,
+    getRenderer,
+    setRenderer,
+    moveToPoint,
+    getEntityManager,
+  } = useNavMesh()
 
-export default function Game({ componentCallback }: GameProps): JSX.Element {
-  useComponent(componentCallback)
+  const { onCharacterInitialized } = useInitialization(init)
 
-  const rogue = useRef<THREE.Group | null>(null)
-
-  const onContextMenu = useCallback((event: ThreeEvent<MouseEvent>): void => {
-    rogue.current?.position.set(
-      event.point.x,
-      event.point.y,
-      event.point.z - 4.0
-    )
-  }, [])
+  const onContextMenu = useCallback(
+    (event: ThreeEvent<MouseEvent>): void => {
+      moveToPoint(event)
+    },
+    [moveToPoint]
+  )
 
   return (
     <div className={styles.container}>
-      <Canvas shadows camera={{ position: [4, -1, 8], fov: 35 }}>
+      <Canvas
+        shadows
+        onCreated={({ gl, scene, camera }: RootState): void => {
+          setScene(scene)
+          setCamera(camera)
+          setRenderer(gl)
+        }}
+      >
         <OrbitControls />
-
         <EffectComposer>
           <Bloom mipmapBlur luminanceThreshold={1} radius={0.7} />
         </EffectComposer>
+        <color attach="background" args={['#15151a']} />
 
-        <Stage
-          intensity={0.5}
-          preset={'rembrandt'}
-          adjustCamera={1}
-          shadows={{
-            type: 'accumulative',
-            color: 'black',
-            colorBlend: 2,
-            opacity: 2,
-          }}
-          environment={'city'}
+        <Stars
+          radius={100}
+          depth={50}
+          count={5000}
+          factor={4}
+          saturation={0}
+          fade
+          speed={1}
+        />
+
+        <NavMeshManager
+          getEntityManager={getEntityManager}
+          getCamera={getCamera}
+          getRenderer={getRenderer}
+          getScene={getScene}
         >
-          <Suspense fallback={null}>
-            <Physics>
-              <Terrain onContextMenu={onContextMenu} />
-              <Lights />
-              <Rogue
-                get={(ref: THREE.Group | null): void => {
-                  rogue.current = ref
-                }}
-              />
-            </Physics>
-          </Suspense>
-        </Stage>
+          <Stage
+            intensity={0.5}
+            preset={'rembrandt'}
+            adjustCamera={1}
+            shadows={{
+              type: 'accumulative',
+              color: 'black',
+              colorBlend: 2,
+              opacity: 2,
+            }}
+            environment={'city'}
+          >
+            <Suspense fallback={null}>
+              <Physics>
+                <Lights />
+                <Arena groupProps={{ onContextMenu }} />
+                <Rogue onInitialized={onCharacterInitialized} />
+                <Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep />
+              </Physics>
+            </Suspense>
+          </Stage>
+        </NavMeshManager>
       </Canvas>
     </div>
   )

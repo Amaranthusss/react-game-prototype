@@ -1,11 +1,9 @@
+@import '/src/styles/theme.scss';
+
 body {
-  background-color: rgb(29, 29, 29);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-color: $emptyColor;
+  position: relative;
   height: 100vh;
   width: 100vw;
-  overflow-x: hidden;
-  overflow-y: hidden;
-	margin: 0px;
+  margin: 0px;
 }
