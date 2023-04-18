@@ -1,7 +1,7 @@
 import { EntityManager } from 'yuka'
 import { RootState } from '@react-three/fiber'
 
-export interface NavMeshManagerProps {
+export interface EngineProps {
   children: JSX.Element
   getEntityManager: () => EntityManager | null
   getRenderer: () => RootState['gl']

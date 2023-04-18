@@ -73,7 +73,7 @@ export default function Character({
       mana: 100,
       movementSpeed: 2.5,
     })
-  }, [])
+  }, [unitId, createHero])
 
   useFrame((): void => {
     const prevPosition: SimplePosition =

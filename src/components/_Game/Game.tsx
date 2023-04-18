@@ -1,6 +1,6 @@
 import { OrbitControls, Stage, Stars } from '@react-three/drei'
 import { EffectComposer } from '@react-three/postprocessing'
-import { NavMeshManager } from '../Providers/NavMeshManager/NavMeshManager'
+import { Engine } from './Engine/Engine'
 import { Suspense } from 'react'
 import { Physics } from '@react-three/cannon'
 import { Canvas } from '@react-three/fiber'
@@ -11,7 +11,7 @@ import { Creep } from './units/Creep/Creep'
 
 import { useInitialization } from './hooks/useInitialization'
 import { useCallback } from 'react'
-import { useNavMesh } from '@/components/Game/hooks/useNavMesh'
+import { useNavMesh } from '@/components/_Game/hooks/useNavMesh'
 
 import { lazy } from 'react'
 import _ from 'lodash'
@@ -21,7 +21,7 @@ import { RootState } from '@react-three/fiber'
 
 import styles from './Game.module.scss'
 
-const Rogue = lazy(() => import('@/components/Game/units/Character/Character'))
+const Rogue = lazy(() => import('@/components/_Game/units/Character/Character'))
 
 export function Game(): JSX.Element {
   const {
@@ -71,7 +71,7 @@ export function Game(): JSX.Element {
           speed={1}
         />
 
-        <NavMeshManager
+        <Engine
           getEntityManager={getEntityManager}
           getCamera={getCamera}
           getRenderer={getRenderer}
@@ -94,11 +94,11 @@ export function Game(): JSX.Element {
                 <Lights />
                 <Arena groupProps={{ onContextMenu }} />
                 <Rogue onInitialized={onCharacterInitialized} />
-                <Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep /><Creep />
+                <Creep />
               </Physics>
             </Suspense>
           </Stage>
-        </NavMeshManager>
+        </Engine>
       </Canvas>
     </div>
   )

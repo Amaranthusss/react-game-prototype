@@ -25,12 +25,19 @@ export type GetRangeFcn = (
   secondUnitId: Unit['id']
 ) => number
 
-type defaultUnitValues = 'maxHealth' | 'maxMana' | 'bonus'
+type defaultUnitValues =
+  | 'maxHealth'
+  | 'maxMana'
+  | 'bonus'
+  | 'target'
+  | 'targets'
 
 type defaultHeroValues =
   | 'maxHealth'
   | 'maxMana'
   | 'bonus'
+  | 'target'
+  | 'targets'
   | 'level'
   | 'experience'
   | 'maxExperience'
