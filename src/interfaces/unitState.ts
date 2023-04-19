@@ -1,1 +1,1 @@
-export type UnitState = 'idle' | 'attacking' | 'walking' | 'casting'
+export type UnitState = 'idle' | 'attacking' | 'walking' | 'casting' | 'dead'

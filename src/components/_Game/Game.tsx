@@ -59,7 +59,7 @@ export function Game(): JSX.Element {
         <EffectComposer>
           <Bloom mipmapBlur luminanceThreshold={1} radius={0.7} />
         </EffectComposer>
-        <color attach="background" args={['#15151a']} />
+        <color attach={'background'} args={['#15151a']} />
 
         <Stars
           radius={100}
@@ -94,6 +94,7 @@ export function Game(): JSX.Element {
                 <Lights />
                 <Arena groupProps={{ onContextMenu }} />
                 <Rogue onInitialized={onCharacterInitialized} />
+                <Creep />
                 <Creep />
               </Physics>
             </Suspense>

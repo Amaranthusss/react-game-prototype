@@ -16,7 +16,7 @@ export const usePlayerStore = create<PlayerStore>()(
         getHero: (): Hero | undefined => {
           const unitId: Unit['id'] = get().unitId
 
-          return useUnitsStore.getState().find(unitId) as Hero | undefined
+          return useUnitsStore.getState().findUnit(unitId) as Hero | undefined
         },
       }),
       { name: 'player-storage' }

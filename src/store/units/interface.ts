@@ -3,24 +3,24 @@ import { Unit } from '@/interfaces/unit'
 
 export interface UnitsStore {
   list: (Unit | Hero)[]
-  find: FindFcn
-  createUnit: CreateUnitFcn
-  createHero: CreateHeroFcn
-  remove: RemoveFcn
-  update: UpdateFcn
-  getRange: GetRangeFcn
+  findUnit: FindUnit
+  createUnit: CreateUnit
+  createHero: CreateHero
+  removeUnit: RemoveUnit
+  updateUnitParameter: UpdateUnitParameter
+  getDistanceBetweenUnits: GetDistanceBetweenUnits
 }
 
-export type FindFcn = (idToFind: Unit['id']) => Unit | Hero | undefined
-export type CreateUnitFcn = (newUnit: CreateUnitNewUnit) => Unit['id']
-export type CreateHeroFcn = (newHero: CreateUnitNewHero) => Unit['id']
-export type RemoveFcn = (idToRemove: Unit['id']) => void
-export type UpdateFcn = <T extends keyof Unit>(
+export type FindUnit = (idToFind: Unit['id']) => Unit | Hero | undefined
+export type CreateUnit = (newUnit: CreateUnitNewUnit) => Unit['id']
+export type CreateHero = (newHero: CreateUnitNewHero) => Unit['id']
+export type RemoveUnit = (idToRemove: Unit['id']) => void
+export type UpdateUnitParameter = <T extends keyof Unit>(
   unitIdToUpdate: Unit['id'],
   stat: T,
   value: (Unit | Hero)[T]
 ) => void
-export type GetRangeFcn = (
+export type GetDistanceBetweenUnits = (
   firstUnitId: Unit['id'],
   secondUnitId: Unit['id']
 ) => number
@@ -31,7 +31,7 @@ type defaultUnitValues =
   | 'bonus'
   | 'target'
   | 'targets'
-	| 'state'
+  | 'state'
 
 type defaultHeroValues =
   | 'maxHealth'
@@ -39,7 +39,7 @@ type defaultHeroValues =
   | 'bonus'
   | 'target'
   | 'targets'
-	| 'state'
+  | 'state'
   | 'level'
   | 'experience'
   | 'maxExperience'

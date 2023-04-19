@@ -9,7 +9,7 @@ import { Unit } from '@/interfaces/unit'
 import { engine } from '../Engine.config'
 
 export function useUnitsRelations(): void {
-  const update = useUnitsStore().update
+  const update = useUnitsStore().updateUnitParameter
 
   const selectTarget = useCallback(
     (attackingUnitId: Unit['id']): Unit['id'] => {
@@ -17,7 +17,7 @@ export function useUnitsRelations(): void {
 
       const targets: Unit['id'][] | undefined = useUnitsStore
         .getState()
-        .find(attackingUnitId)?.targets
+        .findUnit(attackingUnitId)?.targets
 
       if (_.isUndefined(targets)) {
         console.error(`${errorPath} / selectTarget()
@@ -43,29 +43,46 @@ export function useUnitsRelations(): void {
     []
   )
 
+  const tryUpdateTarget = useCallback(
+    (id: Unit['id'], state: Unit['state']): void => {
+      const isNotBusy: boolean =
+        state !== 'casting' && state !== 'attacking' && state !== 'dead'
+
+      if (isNotBusy) {
+        update<'target'>(id, 'target', selectTarget(id))
+      }
+    },
+    [update, selectTarget]
+  )
+
   useEffect((): (() => void) => {
     const onUpdate = (): void => {
-      const list = useUnitsStore.getState().list
+      const list: (Unit | Hero)[] = useUnitsStore.getState().list
 
-      _.forEach(list, ({ name, id, attack }): void => {
-        _.forEach(list, ({ id: targetId, name: targetName }): void => {
-          if (_.isEqual(id, targetId)) {
-            return
-          }
+      _.forEach(
+        list,
+        ({ id, attack, fieldOfView, state }: Unit | Hero): void => {
+          _.forEach(list, ({ id: targetId }: Unit | Hero): void => {
+            const isMatchingUnit: boolean = _.isEqual(id, targetId)
 
-          const rangeToTarget: number = _.round(
-            useUnitsStore.getState().getRange(id, targetId),
-            engine.rangePrecision
-          )
+            if (isMatchingUnit) return
 
-          if (_.lte(rangeToTarget, attack.range)) {
-            update(id, 'target', selectTarget(id))
-            console.log(
-              name + ' is in range ' + rangeToTarget + ' to ' + targetName
+            const rangeToTarget: number = _.round(
+              useUnitsStore.getState().getDistanceBetweenUnits(id, targetId),
+              engine.rangePrecision
             )
-          }
-        })
-      })
+
+            const shouldBePulledByTargetUnit: boolean = _.lte(
+              rangeToTarget,
+              _.max([attack.range, fieldOfView])
+            )
+
+            if (shouldBePulledByTargetUnit) {
+              tryUpdateTarget(id, state)
+            }
+          })
+        }
+      )
     }
 
     const unitsRelationsDetection = setInterval(
@@ -76,7 +93,7 @@ export function useUnitsRelations(): void {
     return (): void => {
       clearInterval(unitsRelationsDetection)
     }
-  }, [update, selectTarget])
+  }, [tryUpdateTarget])
 }
 
 const errorPath = `components / Game / Engine/ hooks / useUnitsRelations`

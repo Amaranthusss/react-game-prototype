@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import _ from 'lodash'
 
 import { CreateUnitNewHero, CreateUnitNewUnit } from './interface'
-import { FindFcn, UnitsStore } from './interface'
+import { FindUnit, UnitsStore } from './interface'
 import { Unit } from '@/interfaces/unit'
 import { Hero } from '@/interfaces/hero'
 
@@ -32,7 +32,7 @@ export const useUnitsStore = create<UnitsStore>()(
         return {
           list: [],
 
-          find: (idToFind: Unit['id']): Unit | Hero | undefined => {
+          findUnit: (idToFind: Unit['id']): Unit | Hero | undefined => {
             const list: UnitsStore['list'] = get().list
 
             return _.find(list, ({ id }: Unit | Hero): boolean => {
@@ -42,7 +42,7 @@ export const useUnitsStore = create<UnitsStore>()(
 
           createUnit: (newUnit: CreateUnitNewUnit): Unit['id'] => {
             const prevList: UnitsStore['list'] = get().list
-            const find: UnitsStore['find'] = get().find
+            const find: UnitsStore['findUnit'] = get().findUnit
 
             const isDefinied: boolean = !_.isUndefined(find(newUnit.id))
 
@@ -62,7 +62,7 @@ export const useUnitsStore = create<UnitsStore>()(
 
           createHero: (newHero: CreateUnitNewHero): Unit['id'] => {
             const prevList: UnitsStore['list'] = get().list
-            const find: UnitsStore['find'] = get().find
+            const find: UnitsStore['findUnit'] = get().findUnit
 
             const isDefinied: boolean = !_.isUndefined(find(newHero.id))
 
@@ -83,7 +83,7 @@ export const useUnitsStore = create<UnitsStore>()(
             return hero.id
           },
 
-          remove: (idToRemove: Unit['id']): void => {
+          removeUnit: (idToRemove: Unit['id']): void => {
             const prevList: UnitsStore['list'] = get().list
 
             set({
@@ -93,7 +93,7 @@ export const useUnitsStore = create<UnitsStore>()(
             })
           },
 
-          update: <T extends keyof Unit>(
+          updateUnitParameter: <T extends keyof Unit>(
             unitIdToUpdate: Unit['id'],
             stat: T,
             value: (Unit | Hero)[T]
@@ -123,11 +123,11 @@ export const useUnitsStore = create<UnitsStore>()(
             set({ list })
           },
 
-          getRange: (
+          getDistanceBetweenUnits: (
             firstCharacterId: string,
             secondCharacterId: string
           ): number => {
-            const find: FindFcn = get().find
+            const find: FindUnit = get().findUnit
             const list: UnitsStore['list'] = get().list
 
             const firstCharacter: Unit | Hero | undefined =

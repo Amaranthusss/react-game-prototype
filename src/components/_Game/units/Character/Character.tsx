@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
-import { usePlayerStore } from '@/store/player/usePlayerStore'
 import { useUnitsStore } from '@/store/units/useUnitsStore'
 import { useFrame } from '@react-three/fiber'
 
 import * as THREE from 'three'
 import _ from 'lodash'
 
+import { CreateHero, FindUnit } from '@/store/units/interface'
+import { UpdateUnitParameter } from '@/store/units/interface'
 import { CharacterProps } from './Character.interface'
 import { SimplePosition } from '@/interfaces/simplePosition'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
@@ -43,9 +44,20 @@ export default function Character({
   const { nodes, animations } = useGLTF(url) as GLTFResult
   const { actions, names } = useAnimations(animations, groupRef)
 
-  const createHero = useUnitsStore().createHero
-  const updateHero = useUnitsStore().update
-  const findHero = useUnitsStore().find
+  const createHero = useMemo(
+    (): CreateHero => useUnitsStore.getState().createHero,
+    []
+  )
+
+  const updateUnitParameter = useMemo(
+    (): UpdateUnitParameter => useUnitsStore.getState().updateUnitParameter,
+    []
+  )
+
+  const findUnit = useMemo(
+    (): FindUnit => useUnitsStore.getState().findUnit,
+    []
+  )
 
   useEffect(() => {
     actions[names?.[0]]?.play()
@@ -78,7 +90,7 @@ export default function Character({
 
   useFrame((): void => {
     const prevPosition: SimplePosition =
-      findHero(unitId)?.position ?? Config.defaultPlayerPosition
+      findUnit(unitId)?.position ?? Config.defaultPlayerPosition
 
     const worldPosition: THREE.Vector3 | undefined =
       meshRef.current?.getWorldPosition?.(new THREE.Vector3(0, 0, 0))
@@ -96,7 +108,7 @@ export default function Character({
       return
     }
 
-    updateHero<'position'>(unitId, 'position', nextPosition)
+    updateUnitParameter<'position'>(unitId, 'position', nextPosition)
   })
 
   return (
