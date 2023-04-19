@@ -1,7 +1,7 @@
 import { SimplePosition } from './simplePosition'
 import { AttackType } from './attackType'
 import { ArmorType } from './armorType'
-import { Hero } from './hero'
+import { UnitState } from './unitState'
 
 export interface Unit {
   id: string
@@ -11,9 +11,11 @@ export interface Unit {
   maxMana: number
   maxHealth: number
   movementSpeed: number
+  fieldOfView: number
   position: SimplePosition
   target: Unit['id'] | undefined
   targets: Unit['id'][]
+  state: UnitState
   defence: {
     value: number
     type: ArmorType

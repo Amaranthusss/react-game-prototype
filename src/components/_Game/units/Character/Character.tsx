@@ -67,11 +67,12 @@ export default function Character({
       agility: 5,
       intellect: 5,
       strength: 5,
-      attack: { baseDamage: 20, range: 100, speed: 2, type: 'normal' },
+      attack: { baseDamage: 20, range: 4, speed: 2, type: 'normal' },
       defence: { dodge: 0, type: 'medium', value: 2 },
       health: 420,
       mana: 100,
       movementSpeed: 2.5,
+      fieldOfView: 60,
     })
   }, [unitId, createHero])
 

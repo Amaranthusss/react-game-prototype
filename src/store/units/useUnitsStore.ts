@@ -11,13 +11,17 @@ import { Hero } from '@/interfaces/hero'
 const getDefaultUnitValues = (
   health: number,
   mana: number
-): Pick<Unit, 'maxHealth' | 'maxMana' | 'bonus' | 'target' | 'targets'> => {
+): Pick<
+  Unit,
+  'maxHealth' | 'maxMana' | 'bonus' | 'target' | 'targets' | 'state'
+> => {
   return {
     maxHealth: health,
     maxMana: mana,
     bonus: [],
     target: undefined,
     targets: [],
+    state: 'idle',
   }
 }
 

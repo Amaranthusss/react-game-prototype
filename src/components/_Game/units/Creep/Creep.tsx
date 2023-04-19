@@ -23,11 +23,12 @@ export function Creep({ groupProps, onInitialized }: CreepProps): JSX.Element {
       id: unitId,
       name: 'Creep',
       position: [0, 0, 0],
-      attack: { baseDamage: 20, range: 100, speed: 2, type: 'normal' },
+      attack: { baseDamage: 20, range: 40, speed: 2, type: 'normal' },
       defence: { dodge: 0, type: 'medium', value: 2 },
       health: 420,
       mana: 100,
       movementSpeed: 2.5,
+      fieldOfView: 80,
     })
   }, [unitId, createUnit])
 

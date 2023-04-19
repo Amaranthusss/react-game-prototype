@@ -31,6 +31,7 @@ type defaultUnitValues =
   | 'bonus'
   | 'target'
   | 'targets'
+	| 'state'
 
 type defaultHeroValues =
   | 'maxHealth'
@@ -38,6 +39,7 @@ type defaultHeroValues =
   | 'bonus'
   | 'target'
   | 'targets'
+	| 'state'
   | 'level'
   | 'experience'
   | 'maxExperience'
