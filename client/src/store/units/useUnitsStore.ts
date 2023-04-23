@@ -9,15 +9,22 @@ import { Unit } from '@/interfaces/unit'
 import { Hero } from '@/interfaces/hero'
 
 const getDefaultUnitValues = (
-  health: number,
-  mana: number
+  newUnit: CreateUnitNewUnit | CreateUnitNewHero
 ): Pick<
   Unit,
-  'maxHealth' | 'maxMana' | 'bonus' | 'target' | 'targets' | 'state'
+  'maxHealth' | 'maxMana' | 'bonus' | 'target' | 'targets' | 'state' | 'attack'
 > => {
+  const defaultAttackDuration: number = 500
+
+  const attack: Unit['attack'] = {
+    ...newUnit.attack,
+    duration: newUnit.attack?.duration ?? defaultAttackDuration,
+  }
+
   return {
-    maxHealth: health,
-    maxMana: mana,
+    maxHealth: newUnit.health,
+    maxMana: newUnit.mana,
+    attack,
     bonus: [],
     target: undefined,
     targets: [],
@@ -52,7 +59,7 @@ export const useUnitsStore = create<UnitsStore>()(
 
             const unit: Unit = {
               ...newUnit,
-              ...getDefaultUnitValues(newUnit.health, newUnit.mana),
+              ...getDefaultUnitValues(newUnit),
             }
 
             set({ list: [...prevList, unit] })
@@ -72,7 +79,7 @@ export const useUnitsStore = create<UnitsStore>()(
 
             const hero: Hero = {
               ...newHero,
-              ...getDefaultUnitValues(newHero.health, newHero.mana),
+              ...getDefaultUnitValues(newHero),
               level: 1,
               experience: 0,
               maxExperience: 100,
@@ -168,6 +175,16 @@ export const useUnitsStore = create<UnitsStore>()(
               secondCharacterPositionVector3
             )
           },
+
+          triggerAttackMelee: (
+            attackingUnitId: Unit['id'],
+            attackedUnitId: Unit['id']
+          ): void => {},
+
+          triggerAttackRange: (
+            attackingUnitId: Unit['id'],
+            attackedUnitId: Unit['id']
+          ): void => {},
         }
       },
       { name: 'units-storage' }

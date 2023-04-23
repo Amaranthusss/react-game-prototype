@@ -8,6 +8,8 @@ export interface UnitsStore {
   createHero: CreateHero
   removeUnit: RemoveUnit
   updateUnitParameter: UpdateUnitParameter
+  triggerAttackMelee: TriggerAttackMelee
+  triggerAttackRange: TriggerAttackRange
   getDistanceBetweenUnits: GetDistanceBetweenUnits
 }
 
@@ -20,12 +22,21 @@ export type UpdateUnitParameter = <T extends keyof Unit>(
   stat: T,
   value: (Unit | Hero)[T]
 ) => void
+export type TriggerAttackRange = (
+  attackingUnitId: Unit['id'],
+  attackedUnitId: Unit['id']
+) => void
+export type TriggerAttackMelee = (
+  attackingUnitId: Unit['id'],
+  attackedUnitId: Unit['id']
+) => void
 export type GetDistanceBetweenUnits = (
   firstUnitId: Unit['id'],
   secondUnitId: Unit['id']
 ) => number
 
 type defaultUnitValues =
+  | 'attack'
   | 'maxHealth'
   | 'maxMana'
   | 'bonus'
@@ -34,6 +45,7 @@ type defaultUnitValues =
   | 'state'
 
 type defaultHeroValues =
+  | 'attack'
   | 'maxHealth'
   | 'maxMana'
   | 'bonus'
@@ -44,5 +56,15 @@ type defaultHeroValues =
   | 'experience'
   | 'maxExperience'
 
-export type CreateUnitNewUnit = Omit<Unit, defaultUnitValues>
-export type CreateUnitNewHero = Omit<Hero, defaultHeroValues>
+interface UnitAttackWithNullishDefaults
+  extends Omit<Pick<Unit, 'attack'>['attack'], 'duration'> {
+  duration?: Unit['attack']['duration']
+}
+
+export type CreateUnitNewUnit = Omit<Unit, defaultUnitValues> & {
+  attack: UnitAttackWithNullishDefaults
+}
+
+export type CreateUnitNewHero = Omit<Hero, defaultHeroValues> & {
+  attack: UnitAttackWithNullishDefaults
+}

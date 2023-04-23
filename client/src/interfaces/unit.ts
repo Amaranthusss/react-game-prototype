@@ -24,7 +24,10 @@ export interface Unit {
   attack: {
     baseDamage: number
     range: number
+    /** Delay between attacks, milliseconds*/
     speed: number
+    /** Delay to finish attack animation and deal damage, milliseconds*/
+    duration: number
     type: AttackType
     model?: JSX.Element
   }
