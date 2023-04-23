@@ -1,14 +1,14 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 import THREE from 'three'
 import _ from 'lodash'
 
-import { CharacterComponent } from '../units/Character/Character.interface'
+import { HeroComponent } from '../units/common/Hero/Hero.interface'
 import { InitFcn } from '@/components/_Game/hooks/useNavMesh'
 
 export const useInitialization = (init: InitFcn) => {
   const onCharacterInitialized = useCallback(
-    (nextCharacterComponent: CharacterComponent): void => {
+    (nextCharacterComponent: HeroComponent): void => {
       const characterMesh: THREE.Mesh | null = nextCharacterComponent.getMesh()
 
       if (_.isNull(characterMesh)) {

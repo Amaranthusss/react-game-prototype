@@ -1,34 +1,29 @@
-import { usePlayerStore } from '@/store/player/usePlayerStore'
+import { usePlayerUnit } from '@/hooks/usePlayerUnit'
 
 import _ from 'lodash'
-
-import { Hero } from '@/interfaces/hero'
 
 import styles from './StatsUI.module.scss'
 
 export function StatsUI(): JSX.Element {
-  return <span />
-  // const hero: Hero | undefined = usePlayerStore().getHero()
+  const { hero } = usePlayerUnit()
 
-  // if (_.isUndefined(hero)) {
-  //   return <span />
-  // }
+  if (_.isNil(hero)) {
+    return <span />
+  }
 
-  // const { agility, strength, intellect, attack, defence } = hero
+  return (
+    <div className={styles.container}>
+      <p>
+        ⚔ Damage [{hero.attack.type}]: {hero.attack.baseDamage}
+      </p>
 
-  // return (
-  //   <div className={styles.container}>
-  //     <p>
-  //       ⚔ Damage [{attack.type}]: {attack.baseDamage}
-  //     </p>
+      <p>
+        🛡 Armor [{hero.defence.type}]: {hero.defence.value}
+      </p>
 
-  //     <p>
-  //       🛡 Armor [{defence.type}]: {defence.value}
-  //     </p>
-
-  //     <p>🦵 Agility: {agility}</p>
-  //     <p>💪 Strength: {strength}</p>
-  //     <p>📜 Intellect : {intellect}</p>
-  //   </div>
-  // )
+      <p>🦵 Agility: {hero.agility}</p>
+      <p>💪 Strength: {hero.strength}</p>
+      <p>📜 Intellect : {hero.intellect}</p>
+    </div>
+  )
 }

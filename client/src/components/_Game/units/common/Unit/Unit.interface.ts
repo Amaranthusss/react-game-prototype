@@ -1,11 +1,10 @@
 import { GroupProps } from '@react-three/fiber'
 
-export interface CharacterComponent {
+export interface UnitComponent {
   getGroup: () => THREE.Group | null
   getMesh: () => THREE.Mesh | null
 }
 
-export interface CharacterProps {
+export interface UnitProps {
   groupProps?: GroupProps
-  onInitialized: (component: CharacterComponent) => void
 }

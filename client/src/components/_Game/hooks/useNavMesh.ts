@@ -116,9 +116,6 @@ export function useNavMesh() {
 
   const init = useCallback(
     (nextVehicleMesh: THREE.Mesh): void => {
-      getCamera().position.set(25, 25, 0)
-      getCamera().lookAt(getScene().position)
-
       // Path helper
       pathHelper.visible = false
       getScene().add(pathHelper)
@@ -137,8 +134,9 @@ export function useNavMesh() {
 
           navMesh.current = navigationMesh
           navMeshGroup.current = nextNavMeshGroup
-					nextNavMeshGroup.visible = false
-          getScene().add(nextNavMeshGroup)
+
+          nextNavMeshGroup.visible = false
+          getScene().add(navMeshGroup.current)
 
           // Game setup
           setEntityManager(new YUKA.EntityManager())
@@ -168,7 +166,6 @@ export function useNavMesh() {
     [
       sync,
       getScene,
-      getCamera,
       pathHelper,
       getEntityManager,
       setEntityManager,

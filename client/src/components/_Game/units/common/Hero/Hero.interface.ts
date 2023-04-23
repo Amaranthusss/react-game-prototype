@@ -1,12 +1,11 @@
-import { EntityManager } from 'yuka'
 import { GroupProps } from '@react-three/fiber'
 
-export interface CreepComponent {
+export interface HeroComponent {
   getGroup: () => THREE.Group | null
   getMesh: () => THREE.Mesh | null
 }
 
-export interface CreepProps {
+export interface HeroProps {
   groupProps?: GroupProps
-  getEntityManager: () => EntityManager | null
+  onInitialized: (component: HeroComponent) => void
 }

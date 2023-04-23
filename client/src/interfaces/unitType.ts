@@ -1,1 +1,4 @@
-export type UnitType = 'melee' | 'range'
+export enum UnitType {
+  Melee,
+  Range,
+}

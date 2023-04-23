@@ -1,6 +1,6 @@
-import { Cone } from '@react-three/drei'
+import { Cone, Ring } from '@react-three/drei'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useUnitsStore } from '@/store/units/useUnitsStore'
 
 import * as THREE from 'three'
@@ -8,13 +8,16 @@ import _ from 'lodash'
 
 import { SimplePosition } from '@/interfaces/simplePosition'
 import { CreateUnit } from '@/store/units/interface'
-import { CreepProps } from './Creep.interface'
+import { UnitProps } from './Unit.interface'
 import { Unit } from '@/interfaces/unit'
 
-export function Creep({
-  groupProps,
-  getEntityManager,
-}: CreepProps): JSX.Element {
+import { engineContext } from '@/components/_Game/Engine/Engine.context'
+
+export function Unit({ groupProps }: UnitProps): JSX.Element {
+  const getEntityManager = useContext(engineContext)
+
+  console.log('entityManager in creep', getEntityManager())
+
   const [unitId] = useState<Unit['id']>(_.uniqueId())
   const [randomPos] = useState<SimplePosition>([
     _.random(true) * 10,
@@ -42,16 +45,15 @@ export function Creep({
       movementSpeed: 2.5,
       fieldOfView: 80,
     })
-
-    meshRef.current?.position.set(randomPos[0], randomPos[1], randomPos[2])
   }, [unitId, createUnit, randomPos])
-
-  console.log('creep render')
 
   return (
     <group {...groupProps} ref={groupRef}>
       <mesh ref={meshRef}>
         <Cone castShadow />
+        <Ring args={[8.5]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <meshStandardMaterial color={'red'} />
+        </Ring>
       </mesh>
     </group>
   )

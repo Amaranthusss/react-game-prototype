@@ -7,7 +7,6 @@ import { Canvas } from '@react-three/fiber'
 import { Lights } from './environment/Lights/Lights'
 import { Bloom } from '@react-three/postprocessing'
 import { Arena } from './environment/Arena/Arena'
-import { Creep } from './units/Creep/Creep'
 
 import { useInitialization } from './hooks/useInitialization'
 import { useCallback } from 'react'
@@ -21,7 +20,7 @@ import { RootState } from '@react-three/fiber'
 
 import styles from './Game.module.scss'
 
-const Rogue = lazy(() => import('@/components/_Game/units/Character/Character'))
+const Player = lazy(() => import('@/components/_Game/units/common/Hero/Hero'))
 
 export function Game(): JSX.Element {
   const {
@@ -93,11 +92,9 @@ export function Game(): JSX.Element {
               <Physics>
                 <Lights />
                 <Arena groupProps={{ onContextMenu }} />
+                <Player onInitialized={onCharacterInitialized} />
 
-                <Rogue onInitialized={onCharacterInitialized} />
-
-                <Creep getEntityManager={getEntityManager} />
-                <Creep getEntityManager={getEntityManager} />
+                {/* <Unit /> */}
               </Physics>
             </Suspense>
           </Stage>

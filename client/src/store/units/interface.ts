@@ -3,7 +3,7 @@ import { Hero } from '@/interfaces/hero'
 import { Unit } from '@/interfaces/unit'
 
 export interface UnitsStore {
-  list: (Unit | Hero)[]
+  list: { [id: Unit['id']]: Unit | Hero }
   findUnit: FindUnit
   createUnit: CreateUnit
   createHero: CreateHero
@@ -11,36 +11,39 @@ export interface UnitsStore {
   updateUnitParameter: UpdateUnitParameter
   triggerAttackMelee: TriggerAttackMelee
   triggerAttackRange: TriggerAttackRange
+  tryAutoFindTarget: TryAutoFindTarget
+  findWeakestTarget: FindWeakestTarget
   getDistanceBetweenUnits: GetDistanceBetweenUnits
-  onNewTarget: OnNewTarget
   getUnitType: GetUnitType
 }
 
-export type FindUnit = (idToFind: Unit['id']) => Unit | Hero | null
+export type FindUnit = (idOfSearchedUnit: Unit['id']) => Unit | Hero | null
 export type CreateUnit = (newUnit: CreateUnitNewUnit) => Unit['id']
 export type CreateHero = (newHero: CreateUnitNewHero) => Unit['id']
-export type RemoveUnit = (idToRemove: Unit['id']) => void
+export type RemoveUnit = (idOfUnitToRemove: Unit['id']) => void
+export type TryAutoFindTarget = (idOfMatchingUnit: Unit['id']) => void
+export type FindWeakestTarget = (idOfMatchingUnit: Unit['id']) => Unit['id']
 export type UpdateUnitParameter = <T extends keyof Unit>(
-  unitIdToUpdate: Unit['id'],
+  idUnitToUpdate: Unit['id'],
   stat: T,
   value: (Unit | Hero)[T]
 ) => void
 export type TriggerAttackRange = (
-  attackingUnitId: Unit['id'],
-  attackedUnitId: Unit['id']
+  idOfAttackingUnit: Unit['id'],
+  idOfAttackedUnit: Unit['id']
 ) => void
 export type TriggerAttackMelee = (
-  attackingUnitId: Unit['id'],
-  attackedUnitId: Unit['id']
+  idOfAttackingUnit: Unit['id'],
+  idOfAttackedUnit: Unit['id']
 ) => void
 export type GetDistanceBetweenUnits = (
-  firstUnitId: Unit['id'],
-  secondUnitId: Unit['id']
+  idOfFirstUnit: Unit['id'],
+  idOfSecondUnit: Unit['id']
 ) => number
-export type OnNewTarget = (attackingUnitId: Unit['id']) => void
 export type GetUnitType = (unitId: Unit['id']) => UnitType | null
 
 type defaultUnitValues =
+  | 'lastUpdate'
   | 'attack'
   | 'maxHealth'
   | 'maxMana'
@@ -50,6 +53,7 @@ type defaultUnitValues =
   | 'state'
 
 type defaultHeroValues =
+  | 'lastUpdate'
   | 'attack'
   | 'maxHealth'
   | 'maxMana'
