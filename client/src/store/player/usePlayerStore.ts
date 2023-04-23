@@ -1,6 +1,6 @@
 import { useUnitsStore } from '../units/useUnitsStore'
 
-import { devtools, persist } from 'zustand/middleware'
+import { devtools } from 'zustand/middleware'
 import { create } from 'zustand'
 import _ from 'lodash'
 
@@ -10,16 +10,15 @@ import { Unit } from '@/interfaces/unit'
 
 export const usePlayerStore = create<PlayerStore>()(
   devtools(
-    persist(
-      (set, get): PlayerStore => ({
-        unitId: '',
-        getHero: (): Hero | undefined => {
-          const unitId: Unit['id'] = get().unitId
+    (set, get): PlayerStore => ({
+      unitId: '',
 
-          return useUnitsStore.getState().findUnit(unitId) as Hero | undefined
-        },
-      }),
-      { name: 'player-storage' }
-    )
+      getHero: (): Hero | null => {
+        const unitId: Unit['id'] = get().unitId
+
+        return useUnitsStore.getState().findUnit(unitId) as Hero | null
+      },
+    }),
+    { name: 'player-storage' }
   )
 )

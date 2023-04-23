@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "front": "cd client && yarn run dev",
-    "back": "cd server && yarn run start:dev"
+		"dev": "cd client && yarn run dev",
+    "server": "cd server && yarn run start:dev"
   }
 }

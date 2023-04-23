@@ -1,11 +1,11 @@
 import { GroupProps } from '@react-three/fiber'
 
-export interface CreepComponent {
+export interface HeroComponent {
   getGroup: () => THREE.Group | null
   getMesh: () => THREE.Mesh | null
 }
 
-export interface CreepProps {
+export interface HeroProps {
   groupProps?: GroupProps
-  onInitialized?: (component: CreepComponent) => void
+  onInitialized: (component: HeroComponent) => void
 }

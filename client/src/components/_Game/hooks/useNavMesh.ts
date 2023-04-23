@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from 'react'
 import { useConvexRegionHelper } from './useConvexRegionHelper'
+import { useCallback, useRef } from 'react'
 import { useRefState } from '../../../hooks/useRefState'
 
 import * as THREE from 'three'
@@ -13,12 +13,12 @@ const navMeshUrl: string = '/models/arena/navmesh.glb'
 export function useNavMesh() {
   const { createConvexRegionHelper } = useConvexRegionHelper()
 
-  const [pathMaterial] = useState<THREE.LineBasicMaterial>(
+  const pathMaterial = useRef<THREE.LineBasicMaterial>(
     new THREE.LineBasicMaterial({ color: 0xff0000 })
   )
 
-  const [pathHelper] = useState<THREE.Line>(
-    new THREE.Line(new THREE.BufferGeometry(), pathMaterial)
+  const pathHelper = useRef<THREE.Line>(
+    new THREE.Line(new THREE.BufferGeometry(), pathMaterial.current)
   )
 
   const { get: getRenderer, set: setRenderer } = useRefState<RootState['gl']>()
@@ -65,9 +65,11 @@ export function useNavMesh() {
         //@ts-ignore YUKA.Vector3 / THREE.Vector3 differences
         navMesh.current.findPath(from, to) as THREE.Vector3[]
 
-      pathHelper.visible = true
-      pathHelper.geometry.dispose()
-      pathHelper.geometry = new THREE.BufferGeometry().setFromPoints(path)
+      pathHelper.current.visible = true
+      pathHelper.current.geometry.dispose()
+      pathHelper.current.geometry = new THREE.BufferGeometry().setFromPoints(
+        path
+      )
 
       type FollowPathBehavior = YUKA.SteeringBehavior & { path: any }
 
@@ -116,12 +118,9 @@ export function useNavMesh() {
 
   const init = useCallback(
     (nextVehicleMesh: THREE.Mesh): void => {
-      getCamera().position.set(25, 25, 0)
-      getCamera().lookAt(getScene().position)
-
       // Path helper
-      pathHelper.visible = false
-      getScene().add(pathHelper)
+      pathHelper.current.visible = false
+      getScene().add(pathHelper.current)
 
       // Vehicle
       nextVehicleMesh.matrixAutoUpdate = false
@@ -137,8 +136,9 @@ export function useNavMesh() {
 
           navMesh.current = navigationMesh
           navMeshGroup.current = nextNavMeshGroup
-					nextNavMeshGroup.visible = false
-          getScene().add(nextNavMeshGroup)
+
+          nextNavMeshGroup.visible = false
+          getScene().add(navMeshGroup.current)
 
           // Game setup
           setEntityManager(new YUKA.EntityManager())
@@ -168,7 +168,6 @@ export function useNavMesh() {
     [
       sync,
       getScene,
-      getCamera,
       pathHelper,
       getEntityManager,
       setEntityManager,

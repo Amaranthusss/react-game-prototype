@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
+import _ from 'lodash'
+
 import { ArenaProps, GLTFResult } from './Arena.interface'
 
 const url: string = '/models/arena/arena.glb'

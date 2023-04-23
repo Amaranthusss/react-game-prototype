@@ -1,34 +1,43 @@
-import { usePlayerStore } from '@/store/player/usePlayerStore'
+import { usePlayerUnit } from '@/hooks/usePlayerUnit'
+import { useUnitsStore } from '@/store/units/useUnitsStore'
 
 import _ from 'lodash'
-
-import { Hero } from '@/interfaces/hero'
+import { useMemo } from 'react'
 
 import styles from './StatsUI.module.scss'
 
 export function StatsUI(): JSX.Element {
-  return <span />
-  // const hero: Hero | undefined = usePlayerStore().getHero()
+  const { hero } = usePlayerUnit()
+  const findUnit = useUnitsStore().findUnit
 
-  // if (_.isUndefined(hero)) {
-  //   return <span />
-  // }
+  const targetUnit = useMemo(() => {
+    if (_.isNil(hero?.target) || hero?.target == null) {
+      return
+    }
 
-  // const { agility, strength, intellect, attack, defence } = hero
+    return findUnit(hero.target)
+  }, [findUnit, hero?.target])
 
-  // return (
-  //   <div className={styles.container}>
-  //     <p>
-  //       ⚔ Damage [{attack.type}]: {attack.baseDamage}
-  //     </p>
+  if (_.isNil(hero)) {
+    return <span />
+  }
 
-  //     <p>
-  //       🛡 Armor [{defence.type}]: {defence.value}
-  //     </p>
+  return (
+    <div className={styles.container}>
+      <p>
+        ⚔ Damage [{hero.attack.type}]: {hero.attack.baseDamage}
+      </p>
 
-  //     <p>🦵 Agility: {agility}</p>
-  //     <p>💪 Strength: {strength}</p>
-  //     <p>📜 Intellect : {intellect}</p>
-  //   </div>
-  // )
+      <p>
+        🛡 Armor [{hero.defence.type}]: {hero.defence.value}
+      </p>
+
+      <p>🦵 Agility: {hero.agility}</p>
+      <p>💪 Strength: {hero.strength}</p>
+      <p>📜 Intellect: {hero.intellect}</p>
+      <p>
+        <b>Target name: {targetUnit?.name ?? 'None'}</b>
+      </p>
+    </div>
+  )
 }

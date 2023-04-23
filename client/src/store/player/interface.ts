@@ -3,5 +3,7 @@ import { Unit } from '@/interfaces/unit'
 
 export interface PlayerStore {
   unitId: Unit['id']
-  getHero: () => Hero | undefined
+  getHero: GetHero
 }
+
+export type GetHero = () => Hero | null

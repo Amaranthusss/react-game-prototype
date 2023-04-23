@@ -13,9 +13,11 @@ export interface Unit {
   movementSpeed: number
   fieldOfView: number
   position: SimplePosition
-  target: Unit['id'] | undefined
+  target: Unit['id'] | null
+  /** All units' IDs in range */
   targets: Unit['id'][]
   state: UnitState
+  lastUpdate: number
   defence: {
     value: number
     type: ArmorType
@@ -24,7 +26,10 @@ export interface Unit {
   attack: {
     baseDamage: number
     range: number
+    /** Delay between attacks, milliseconds*/
     speed: number
+    /** Delay to finish attack animation and deal damage, milliseconds*/
+    duration: number
     type: AttackType
     model?: JSX.Element
   }

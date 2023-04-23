@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
+import { usePlayerStore } from '@/store/player/usePlayerStore'
 import { useUnitsStore } from '@/store/units/useUnitsStore'
 import { useFrame } from '@react-three/fiber'
 
@@ -8,7 +9,7 @@ import _ from 'lodash'
 
 import { CreateHero, FindUnit } from '@/store/units/interface'
 import { UpdateUnitParameter } from '@/store/units/interface'
-import { CharacterProps } from './Character.interface'
+import { HeroProps } from './Hero.interface'
 import { SimplePosition } from '@/interfaces/simplePosition'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { Unit } from '@/interfaces/unit'
@@ -32,10 +33,7 @@ type GLTFResult = GLTF & {
 
 const url: string = '/models/rogue/rogue.gltf'
 
-export default function Character({
-  groupProps,
-  onInitialized,
-}: CharacterProps) {
+export default function Hero({ groupProps, onInitialized }: HeroProps) {
   const [unitId] = useState<Unit['id']>(_.uniqueId())
 
   const groupRef = useRef<THREE.Group | null>(null)
@@ -86,6 +84,8 @@ export default function Character({
       movementSpeed: 2.5,
       fieldOfView: 60,
     })
+
+    usePlayerStore.setState({ unitId })
   }, [unitId, createHero])
 
   useFrame((): void => {
