@@ -4,7 +4,8 @@ import * as THREE from 'three'
 import _ from 'lodash'
 
 import { CreateUnitNewHero, CreateUnitNewUnit } from './interface'
-import { FindUnit, UnitsStore } from './interface'
+import { UnitsStore } from './interface'
+import { UnitType } from '@/interfaces/unitType'
 import { Unit } from '@/interfaces/unit'
 import { Hero } from '@/interfaces/hero'
 
@@ -15,6 +16,15 @@ const getDefaultUnitValues = (
   'maxHealth' | 'maxMana' | 'bonus' | 'target' | 'targets' | 'state' | 'attack'
 > => {
   const defaultAttackDuration: number = 500
+
+  if (_.lt(newUnit.attack.range, 0)) {
+    console.error(
+      `${errorPath} / getDefaultUnitValues()
+		\n A new unit definition has incorrect attack range - lower than 0
+		\n Unit's attack range:`,
+      newUnit.attack.range
+    )
+  }
 
   const attack: Unit['attack'] = {
     ...newUnit.attack,
@@ -39,19 +49,21 @@ export const useUnitsStore = create<UnitsStore>()(
         return {
           list: [],
 
-          findUnit: (idToFind: Unit['id']): Unit | Hero | undefined => {
+          findUnit: (idToFind: Unit['id']): Unit | Hero | null => {
             const list: UnitsStore['list'] = get().list
 
-            return _.find(list, ({ id }: Unit | Hero): boolean => {
-              return _.isEqual(id, idToFind)
-            })
+            return (
+              _.find(list, ({ id }: Unit | Hero): boolean => {
+                return _.isEqual(id, idToFind)
+              }) ?? null
+            )
           },
 
           createUnit: (newUnit: CreateUnitNewUnit): Unit['id'] => {
             const prevList: UnitsStore['list'] = get().list
-            const find: UnitsStore['findUnit'] = get().findUnit
+            const findUnit: UnitsStore['findUnit'] = get().findUnit
 
-            const isDefinied: boolean = !_.isUndefined(find(newUnit.id))
+            const isDefinied: boolean = !_.isUndefined(findUnit(newUnit.id))
 
             if (isDefinied) {
               return newUnit.id
@@ -69,9 +81,9 @@ export const useUnitsStore = create<UnitsStore>()(
 
           createHero: (newHero: CreateUnitNewHero): Unit['id'] => {
             const prevList: UnitsStore['list'] = get().list
-            const find: UnitsStore['findUnit'] = get().findUnit
+            const findUnit: UnitsStore['findUnit'] = get().findUnit
 
-            const isDefinied: boolean = !_.isUndefined(find(newHero.id))
+            const isDefinied: boolean = !_.isUndefined(findUnit(newHero.id))
 
             if (isDefinied) {
               return newHero.id
@@ -107,73 +119,79 @@ export const useUnitsStore = create<UnitsStore>()(
           ): void => {
             const list: UnitsStore['list'] = get().list
 
-            const characterIndex: number = _.findIndex(
+            const unitIndex: number = _.findIndex(
               list,
               ({ id }: Unit | Hero): boolean => {
                 return _.isEqual(id, unitIdToUpdate)
               }
             )
 
-            if (_.eq(characterIndex, -1)) {
-              console.error(
-                `${errorPath} / update()
-							\n Character with ID ${unitIdToUpdate} couldn't be find
+            if (_.eq(unitIndex, -1)) {
+              return console.error(
+                `${errorPath} / updateUnitParameter()
+							\n Unit with ID ${unitIdToUpdate} couldn't be find
 							\n Units list:`,
                 list
               )
-
-              return
             }
 
-            list[characterIndex] = { ...list[characterIndex], [stat]: value }
+            list[unitIndex] = { ...list[unitIndex], [stat]: value }
 
             set({ list })
           },
 
           getDistanceBetweenUnits: (
-            firstCharacterId: string,
-            secondCharacterId: string
+            firstUnitId: string,
+            secondUnitId: string
           ): number => {
-            const find: FindUnit = get().findUnit
-            const list: UnitsStore['list'] = get().list
+            const { findUnit, list } = get()
 
-            const firstCharacter: Unit | Hero | undefined =
-              find(firstCharacterId)
+            const firstUnit: Unit | Hero | null = findUnit(firstUnitId)
+            const secondUnit: Unit | Hero | null = findUnit(secondUnitId)
 
-            const secondCharacter: Unit | Hero | undefined =
-              find(secondCharacterId)
-
-            if (_.isUndefined(firstCharacter)) {
+            if (_.isNull(firstUnit) || _.isNull(secondUnit)) {
               console.error(
-                `${errorPath} / getRange()
-							\n Character (first) with ID ${firstCharacterId} couldn't be find
-							\n Characters list:`,
+                `${errorPath} / getDistanceBetweenUnits()
+							\n Unit with ID ${firstUnitId} or ${secondUnitId} couldn't be find
+							\n Units list:`,
                 list
               )
 
               return -1
             }
 
-            if (_.isUndefined(secondCharacter)) {
-              console.error(
-                `${errorPath} / getRange()
-							\n Character (second) with ID ${secondCharacter} couldn't be find
-							\n Characters list:`,
-                list
-              )
-
-              return -1
-            }
-
-            const fristCharacterPositionVector3: THREE.Vector3 =
-              new THREE.Vector3(...firstCharacter.position)
-
-            const secondCharacterPositionVector3: THREE.Vector3 =
-              new THREE.Vector3(...secondCharacter.position)
-
-            return fristCharacterPositionVector3.distanceToSquared(
-              secondCharacterPositionVector3
+            const fristUnitPositionVector3: THREE.Vector3 = new THREE.Vector3(
+              ...firstUnit.position
             )
+
+            const secondUnitPositionVector3: THREE.Vector3 = new THREE.Vector3(
+              ...secondUnit.position
+            )
+
+            return fristUnitPositionVector3.distanceToSquared(
+              secondUnitPositionVector3
+            )
+          },
+
+          getUnitType: (unitId: Unit['id']): UnitType | null => {
+            const unit: Unit | Hero | null = get().findUnit(unitId)
+
+            if (_.isNull(unit)) {
+              console.error(
+                `${errorPath} / getUnitType()
+							\n Unit with ID ${unitId} couldn't be find
+							\n Units list:`,
+                get().list
+              )
+
+              return null
+            }
+
+            const maxMeleeRange: number = 4
+
+            return _.inRange(unit.attack.range, 0, maxMeleeRange)
+              ? 'melee'
+              : 'range'
           },
 
           triggerAttackMelee: (
@@ -185,6 +203,22 @@ export const useUnitsStore = create<UnitsStore>()(
             attackingUnitId: Unit['id'],
             attackedUnitId: Unit['id']
           ): void => {},
+
+          onNewTarget: (attackingUnitId: Unit['id']): void => {
+            const attackingUnitType: UnitType | null =
+              get().getUnitType(attackingUnitId)
+
+            if (_.isNull(attackingUnitType)) {
+              return console.error(
+                `${errorPath} / onNewTarget()
+							\n Couldn't get unit type with ID ${attackingUnitId}
+							\n Attacking unit ID:`,
+                attackingUnitId
+              )
+            }
+
+            console.log('onNewTarget', attackingUnitId)
+          },
         }
       },
       { name: 'units-storage' }

@@ -3,13 +3,17 @@ import { useUnitsStore } from '@/store/units/useUnitsStore'
 
 import _ from 'lodash'
 
+import { OnNewTarget, UpdateUnitParameter } from '@/store/units/interface'
 import { Hero } from '@/interfaces/hero'
 import { Unit } from '@/interfaces/unit'
 
 import { engine } from '../Engine.config'
 
 export function useUnitsRelations(): void {
-  const update = useUnitsStore().updateUnitParameter
+  const updateUnitParameter: UpdateUnitParameter =
+    useUnitsStore().updateUnitParameter
+
+  const onNewTarget: OnNewTarget = useUnitsStore().onNewTarget
 
   const selectTarget = useCallback(
     (attackingUnitId: Unit['id']): Unit['id'] => {
@@ -49,10 +53,13 @@ export function useUnitsRelations(): void {
         state !== 'casting' && state !== 'attacking' && state !== 'dead'
 
       if (isNotBusy) {
-        update<'target'>(id, 'target', selectTarget(id))
+        const nextTargetUnitId: Unit['id'] = selectTarget(id)
+
+        updateUnitParameter<'target'>(id, 'target', nextTargetUnitId)
+        onNewTarget(id)
       }
     },
-    [update, selectTarget]
+    [updateUnitParameter, selectTarget, onNewTarget]
   )
 
   useEffect((): (() => void) => {

@@ -1,3 +1,4 @@
+import { EntityManager } from 'yuka'
 import { GroupProps } from '@react-three/fiber'
 
 export interface CreepComponent {
@@ -7,5 +8,5 @@ export interface CreepComponent {
 
 export interface CreepProps {
   groupProps?: GroupProps
-  onInitialized?: (component: CreepComponent) => void
+  getEntityManager: () => EntityManager | null
 }

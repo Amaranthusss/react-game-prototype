@@ -11,7 +11,10 @@ import { CreateUnit } from '@/store/units/interface'
 import { CreepProps } from './Creep.interface'
 import { Unit } from '@/interfaces/unit'
 
-export function Creep({ groupProps, onInitialized }: CreepProps): JSX.Element {
+export function Creep({
+  groupProps,
+  getEntityManager,
+}: CreepProps): JSX.Element {
   const [unitId] = useState<Unit['id']>(_.uniqueId())
   const [randomPos] = useState<SimplePosition>([
     _.random(true) * 10,
@@ -26,6 +29,7 @@ export function Creep({ groupProps, onInitialized }: CreepProps): JSX.Element {
     (): CreateUnit => useUnitsStore.getState().createUnit,
     []
   )
+
   useEffect((): void => {
     createUnit({
       id: unitId,

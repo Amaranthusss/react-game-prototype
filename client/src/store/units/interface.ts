@@ -1,3 +1,4 @@
+import { UnitType } from '@/interfaces/unitType'
 import { Hero } from '@/interfaces/hero'
 import { Unit } from '@/interfaces/unit'
 
@@ -11,9 +12,11 @@ export interface UnitsStore {
   triggerAttackMelee: TriggerAttackMelee
   triggerAttackRange: TriggerAttackRange
   getDistanceBetweenUnits: GetDistanceBetweenUnits
+  onNewTarget: OnNewTarget
+  getUnitType: GetUnitType
 }
 
-export type FindUnit = (idToFind: Unit['id']) => Unit | Hero | undefined
+export type FindUnit = (idToFind: Unit['id']) => Unit | Hero | null
 export type CreateUnit = (newUnit: CreateUnitNewUnit) => Unit['id']
 export type CreateHero = (newHero: CreateUnitNewHero) => Unit['id']
 export type RemoveUnit = (idToRemove: Unit['id']) => void
@@ -34,6 +37,8 @@ export type GetDistanceBetweenUnits = (
   firstUnitId: Unit['id'],
   secondUnitId: Unit['id']
 ) => number
+export type OnNewTarget = (attackingUnitId: Unit['id']) => void
+export type GetUnitType = (unitId: Unit['id']) => UnitType | null
 
 type defaultUnitValues =
   | 'attack'

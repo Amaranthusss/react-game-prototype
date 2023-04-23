@@ -93,9 +93,11 @@ export function Game(): JSX.Element {
               <Physics>
                 <Lights />
                 <Arena groupProps={{ onContextMenu }} />
+
                 <Rogue onInitialized={onCharacterInitialized} />
-                <Creep />
-                <Creep />
+
+                <Creep getEntityManager={getEntityManager} />
+                <Creep getEntityManager={getEntityManager} />
               </Physics>
             </Suspense>
           </Stage>
