@@ -7,6 +7,7 @@ import { Canvas } from '@react-three/fiber'
 import { Lights } from './environment/Lights/Lights'
 import { Bloom } from '@react-three/postprocessing'
 import { Arena } from './environment/Arena/Arena'
+import { Unit } from './units/common/Unit/Unit'
 
 import { useInitialization } from './hooks/useInitialization'
 import { useCallback } from 'react'
@@ -23,6 +24,8 @@ import styles from './Game.module.scss'
 const Player = lazy(() => import('@/components/_Game/units/common/Hero/Hero'))
 
 export function Game(): JSX.Element {
+  // * Be careful with React states renders at this component level
+
   const {
     init,
     getScene,
@@ -94,7 +97,7 @@ export function Game(): JSX.Element {
                 <Arena groupProps={{ onContextMenu }} />
                 <Player onInitialized={onCharacterInitialized} />
 
-                {/* <Unit /> */}
+                <Unit />
               </Physics>
             </Suspense>
           </Stage>

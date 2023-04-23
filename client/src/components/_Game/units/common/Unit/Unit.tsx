@@ -20,9 +20,9 @@ export function Unit({ groupProps }: UnitProps): JSX.Element {
 
   const [unitId] = useState<Unit['id']>(_.uniqueId())
   const [randomPos] = useState<SimplePosition>([
-    _.random(true) * 10,
-    1,
-    _.random(true) * 10,
+    _.random(true) * 40,
+    0,
+    _.random(true) * 40,
   ])
 
   const groupRef = useRef<THREE.Group | null>(null)
@@ -45,6 +45,8 @@ export function Unit({ groupProps }: UnitProps): JSX.Element {
       movementSpeed: 2.5,
       fieldOfView: 80,
     })
+
+    groupRef.current?.position.set(...randomPos)
   }, [unitId, createUnit, randomPos])
 
   return (
