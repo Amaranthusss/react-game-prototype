@@ -130,6 +130,10 @@ export const useUnitsStore = create<UnitsStore>()(
         ): void => {
           const { list, tryAutoFindTarget } = get()
 
+          const previousValue: (Unit | Hero)[T] = list[idUnitToUpdate][stat]
+
+          if (_.isEqual(value, previousValue)) return
+
           list[idUnitToUpdate] = {
             ...list[idUnitToUpdate],
             [stat]: value,
