@@ -24,11 +24,36 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 
 **Zustand** - A small, fast and scalable bearbones state-management solution using simplified flux principles.
 
+## Releases:
+
+<details>
+<summary>v0.1.1 - Prototype (2023-04-24)</summary>
+</details>
+
+<details>
+<summary>v0.1.0 - Prototype (before 2023-04-24)</summary>
+
+### New features:
+
+- 🐲 Initialized UI prototype - ReactJS
+- 🐲 Prepared a simply 3D scene - ThreeJS, ReactThree
+- 🐲 Included path finding movement system - YukaJS
+- 🐲 Initialized units store - Zustand
+- 🐲 Started auto-targeting system
+- 🌐 Initialized backend server - NestJS, SocketIO
+
+</details>
+
+| Icons: | 🐲 Front-End (client) |     | 🌐 Back-End (server) |
+| ------ | --------------------- | --- | -------------------- |
+
 ## References:
 
-### [GLTF/GLB to JSX](https://github.com/pmndrs/gltfjsx)
+[GLTF/GLB to JSX](https://github.com/pmndrs/gltfjsx)
 
 `npx gltfjsx model.glb --transform`
+
+---
 
 ## Planned technologies for a next steps:
 
