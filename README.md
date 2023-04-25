@@ -4,30 +4,23 @@
 
 This repository contains prototype of a simple 3D game based on the ThreeJS.
 
-## Main technologies:
-
-**ReactJS** - A JavaScript library for building user interfaces.
-
-**NextJS** - Next.js is a React framework that gives you building blocks to create web applications. By framework, we mean Next.js handles the tooling and configuration needed for React, and provides additional structure, features, and optimizations for your application.
-
-**ThreeJS** - Cross-browser JavaScript library and application programming interface (API) used to create and display animated 3D computer graphics in a web browser using WebGL.
-
-**@react-three/fiber** - React renderer for three.js.
-
-**@react-three/drei** - A growing collection of useful helpers and fully functional, ready-made abstractions for @react-three/fiber.
-
-**@react-three/cannon** - React hooks for cannon-es (Lightweight 3D physics for the web).
-
-**@react-three/postprocessing** - Postprocessing wrapper for @react-three/fiber.
-
-**Yuka** - A JavaScript library for developing Game AI.
-
-**Zustand** - A small, fast and scalable bearbones state-management solution using simplified flux principles.
+![Preview](/git/preview.jpg)
 
 ## Releases:
 
 <details>
-<summary>v0.1.1 - Prototype (2023-04-24)</summary>
+<summary>v0.1.1 - Prototype (2023-04-25)</summary>
+
+### Bug fixes:
+
+- 🐲 Mesh references connected to units store
+- 🐲 Isolated rogue model from hero component
+- 🐲 Entity manager moved to app store
+
+### New features:
+
+- 🐲 Scene loading indicator
+- 🐲 Each unit has YukaJS vehicle
 </details>
 
 <details>
@@ -54,6 +47,26 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 `npx gltfjsx model.glb --transform`
 
 ---
+
+## Main technologies:
+
+**ReactJS** - A JavaScript library for building user interfaces.
+
+**NextJS** - Next.js is a React framework that gives you building blocks to create web applications. By framework, we mean Next.js handles the tooling and configuration needed for React, and provides additional structure, features, and optimizations for your application.
+
+**ThreeJS** - Cross-browser JavaScript library and application programming interface (API) used to create and display animated 3D computer graphics in a web browser using WebGL.
+
+**@react-three/fiber** - React renderer for three.js.
+
+**@react-three/drei** - A growing collection of useful helpers and fully functional, ready-made abstractions for @react-three/fiber.
+
+**@react-three/cannon** - React hooks for cannon-es (Lightweight 3D physics for the web).
+
+**@react-three/postprocessing** - Postprocessing wrapper for @react-three/fiber.
+
+**Yuka** - A JavaScript library for developing Game AI.
+
+**Zustand** - A small, fast and scalable bearbones state-management solution using simplified flux principles.
 
 ## Planned technologies for a next steps:
 

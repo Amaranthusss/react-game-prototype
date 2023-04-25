@@ -64,10 +64,10 @@ export const useUnitsStore = create<UnitsStore>()(
   devtools(
     (set, get): UnitsStore => {
       return {
-        list: {},
+        list: new Map<Unit['id'], Unit | Hero>(),
 
         findUnit: (idOfSearchedUnit: Unit['id']): Unit | Hero | null => {
-          return get().list?.[idOfSearchedUnit] ?? null
+          return get().list.get(idOfSearchedUnit) ?? null
         },
 
         createUnit: (newUnit: CreateUnitNewUnit): Unit['id'] => {
@@ -128,9 +128,10 @@ export const useUnitsStore = create<UnitsStore>()(
         },
 
         removeUnit: (idOfUnitToRemove: Unit['id']): void => {
-          const prevList: UnitsStore['list'] = get().list
+          const list: UnitsStore['list'] = get().list
 
-          set({ list: _.omit(prevList, idOfUnitToRemove) })
+          list.delete(idOfUnitToRemove)
+          set({ list })
         },
 
         updateUnitParameter: <T extends keyof Unit>(
@@ -140,15 +141,29 @@ export const useUnitsStore = create<UnitsStore>()(
         ): void => {
           const { list, tryAutoFindTarget } = get()
 
-          const previousValue: (Unit | Hero)[T] = list[idUnitToUpdate][stat]
+          const previousUnitData: Unit | Hero | undefined =
+            list.get(idUnitToUpdate)
+
+          if (_.isUndefined(previousUnitData)) {
+            console.error(
+              `${errorPath} / updateUnitParameter()
+							\n Cannot update unit parameter because unit with ID ${idUnitToUpdate} couldn't be found
+							\n Units list:`,
+              list
+            )
+
+            return
+          }
+
+          const previousValue: (Unit | Hero)[T] = previousUnitData[stat]
 
           if (_.isEqual(value, previousValue)) return
 
-          list[idUnitToUpdate] = {
-            ...list[idUnitToUpdate],
+          list.set(idUnitToUpdate, {
+            ...previousUnitData,
             [stat]: value,
             lastUpdate: new Date().getTime(),
-          }
+          })
 
           set({ list })
 
@@ -213,16 +228,6 @@ export const useUnitsStore = create<UnitsStore>()(
             : UnitType.Range
         },
 
-        triggerAttackMelee: (
-          idOfAttackingUnit: Unit['id'],
-          idOfAttackedUnit: Unit['id']
-        ): void => {},
-
-        triggerAttackRange: (
-          idOfAttackingUnit: Unit['id'],
-          idOfAttackedUnit: Unit['id']
-        ): void => {},
-
         tryAutoFindTarget: (matchingUnitId: Unit['id']): void => {
           const { findUnit, list, updateUnitParameter, findWeakestTarget } =
             get()
@@ -271,7 +276,8 @@ export const useUnitsStore = create<UnitsStore>()(
           }
 
           const getTargetWithLowestHealth = (): Unit['id'] => {
-            return _.chain(list)
+            return _.chain(Array.from(list))
+              .map((unit) => unit[1])
               .sortBy(({ mana }) => mana)
               .reverse()
               .find(({ id }: Unit | Hero): boolean =>

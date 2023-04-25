@@ -14,39 +14,32 @@ export function useUnitsRelations(): void {
     useUnitsStore().updateUnitParameter
 
   const updateUnitsTargets = useCallback((): void => {
-    const list: {
-      [id: Unit['id']]: Unit | Hero
-    } = useUnitsStore.getState().list
+    const list: Map<Unit['id'], Unit | Hero> = useUnitsStore.getState().list
 
     // * For each unit in the game
-    _.forEach(list, ({ id, name, attack, fieldOfView }: Unit | Hero): void => {
+    list.forEach(({ id, attack, fieldOfView }): void => {
       const nextTargets: Unit['targets'] = []
 
       // * Match range to each other unit in the game
-      _.forEach(
-        list,
-        ({ id: targetId, name: targetName }: Unit | Hero): void => {
-          const isMatchingUnit: boolean = _.isEqual(id, targetId)
+      list.forEach(({ id: targetId }): void => {
+        const isMatchingUnit: boolean = _.isEqual(id, targetId)
 
-          if (isMatchingUnit) return
+        if (isMatchingUnit) return
 
-          const rangeToTarget: number = _.round(
-            useUnitsStore.getState().getDistanceBetweenUnits(id, targetId),
-            engine.rangePrecision
-          )
+        const rangeToTarget: number = _.round(
+          useUnitsStore.getState().getDistanceBetweenUnits(id, targetId),
+          engine.rangePrecision
+        )
 
-          // console.log(name, 'is in range to', targetName, '-', rangeToTarget)
+        const isInRangeToPull: boolean = _.lte(
+          rangeToTarget,
+          _.max([attack.range, fieldOfView])
+        )
 
-          const shouldBePulledByTargetUnit: boolean = _.lte(
-            rangeToTarget,
-            _.max([attack.range, fieldOfView])
-          )
-
-          if (shouldBePulledByTargetUnit) {
-            nextTargets.push(targetId)
-          }
+        if (isInRangeToPull) {
+          nextTargets.push(targetId)
         }
-      )
+      })
 
       updateUnitParameter<'targets'>(id, 'targets', nextTargets)
     })
