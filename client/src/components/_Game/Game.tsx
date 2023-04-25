@@ -1,8 +1,9 @@
 import { OrbitControls, Stage, Stars } from '@react-three/drei'
 import { EffectComposer } from '@react-three/postprocessing'
-import { Engine } from './Engine/Engine'
 import { Suspense } from 'react'
 import { Physics } from '@react-three/cannon'
+import { Loading } from './Loading/Loading'
+import { Engine } from './Engine/Engine'
 import { Canvas } from '@react-three/fiber'
 import { Lights } from './environment/Lights/Lights'
 import { Bloom } from '@react-three/postprocessing'
@@ -92,7 +93,7 @@ export function Game(): JSX.Element {
             }}
             environment={'city'}
           >
-            <Suspense fallback={null}>
+            <Suspense fallback={<Loading />}>
               <Physics>
                 <Lights />
                 <Arena groupProps={{ onContextMenu: onMoveToPoint }} />
