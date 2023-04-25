@@ -38,6 +38,7 @@ export function StatsUI(): JSX.Element {
       <p>
         <b>Target name: {targetUnit?.name ?? 'None'}</b>
       </p>
+      <p>State: {hero.state}</p>
     </div>
   )
 }

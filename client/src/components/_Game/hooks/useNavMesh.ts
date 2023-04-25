@@ -1,5 +1,6 @@
+import { useCallback, useEffect, useRef } from 'react'
 import { useConvexRegionHelper } from './useConvexRegionHelper'
-import { useCallback, useRef } from 'react'
+import { usePlayerUnit } from '@/hooks/usePlayerUnit'
 import { useRefState } from '../../../hooks/useRefState'
 
 import * as THREE from 'three'
@@ -13,6 +14,8 @@ const navMeshUrl: string = '/models/arena/navmesh.glb'
 export function useNavMesh() {
   const { createConvexRegionHelper } = useConvexRegionHelper()
 
+  const { hero } = usePlayerUnit()
+
   const pathMaterial = useRef<THREE.LineBasicMaterial>(
     new THREE.LineBasicMaterial({ color: 0xff0000 })
   )
@@ -24,14 +27,11 @@ export function useNavMesh() {
   const { get: getRenderer, set: setRenderer } = useRefState<RootState['gl']>()
   const { get: getCamera, set: setCamera } = useRefState<RootState['camera']>()
   const { get: getScene, set: setScene } = useRefState<RootState['scene']>()
-  const { get: getEntityManager, set: setEntityManager } =
-    useRefState<YUKA.EntityManager | null>(null)
 
   const navMesh = useRef<YUKA.NavMesh | null>(null)
   const navMeshGroup = useRef<THREE.Object3D<Event> | null>(null)
   const raycaster = useRef<THREE.Raycaster>(new THREE.Raycaster())
   const mouseCoordinates = useRef<THREE.Vector2>(new THREE.Vector2())
-  const vehicle = useRef<YUKA.Vehicle | null>(null)
   const followPathBehavior = useRef<YUKA.FollowPathBehavior | null>(null)
 
   const sync = useCallback(
@@ -50,41 +50,47 @@ export function useNavMesh() {
 
   const findPathTo = useCallback(
     (target: YUKA.Vector3): void => {
-      if (_.isNull(vehicle.current) || _.isNull(navMesh.current)) {
+      if (
+        _.isNil(hero) ||
+        _.isNil(hero?.vehicle) ||
+        _.isNull(navMesh.current)
+      ) {
         console.error(`${errorPath} / findPathTo()
-				\n vehicle or navMesh is null
-				\n vehicle: ${vehicle.current}
-				\n navMesh: ${navMesh.current}`)
+				\n Hero vehicle or navMesh is null / undefined
+				\n Hero vehicle: ${hero?.vehicle}
+				\n NavMesh: ${navMesh.current}`)
         return
       }
 
-      const from: YUKA.Vector3 = vehicle.current.position
+      const from: YUKA.Vector3 = hero.vehicle.position
       const to: YUKA.Vector3 = target
 
-      const path: THREE.Vector3[] =
-        //@ts-ignore YUKA.Vector3 / THREE.Vector3 differences
-        navMesh.current.findPath(from, to) as THREE.Vector3[]
+      const path: YUKA.Vector3[] = navMesh.current.findPath(from, to)
 
       pathHelper.current.visible = true
       pathHelper.current.geometry.dispose()
       pathHelper.current.geometry = new THREE.BufferGeometry().setFromPoints(
+        //@ts-ignore YUKA.Vector3 / THREE.Vector3 differences
         path
       )
 
-      type FollowPathBehavior = YUKA.SteeringBehavior & { path: any }
+      type FollowPathBehavior = YUKA.SteeringBehavior & {
+        path: YUKA.Path
+      }
 
       const followPathBehavior: FollowPathBehavior = _.first(
-        vehicle.current.steering.behaviors
+        hero.vehicle.steering.behaviors
       ) as FollowPathBehavior
 
       followPathBehavior.active = true
       followPathBehavior.path.clear()
+      console.log(followPathBehavior.path)
 
       for (const point of path) {
         followPathBehavior.path.add(point)
       }
     },
-    [pathHelper]
+    [pathHelper, hero]
   )
 
   const moveToPoint = useCallback(
@@ -141,42 +147,40 @@ export function useNavMesh() {
           getScene().add(navMeshGroup.current)
 
           // Game setup
-          setEntityManager(new YUKA.EntityManager())
-          vehicle.current = new YUKA.Vehicle()
           followPathBehavior.current = new YUKA.FollowPathBehavior()
 
-          if (_.isNull(vehicle.current)) {
+          if (_.isNil(hero) || _.isNil(hero?.vehicle)) {
             console.error(`${errorPath} / init()
-					\n vehicle is null`)
+					\n Hero vehicle is null or undefined`)
             return
           }
 
-          if (_.isNull(getEntityManager())) {
-            console.error(`${errorPath} / init()
-					\n getEntityManager returned null`)
-            return
-          }
-
-          vehicle.current.maxSpeed = 1.5
-          vehicle.current.maxForce = 100
-          vehicle.current.setRenderComponent(nextVehicleMesh, sync)
+          hero.vehicle.maxSpeed = 1.5
+          hero.vehicle.maxForce = 100
+          hero.vehicle.setRenderComponent(nextVehicleMesh, sync)
           followPathBehavior.current.active = false
-          vehicle.current.steering.add(followPathBehavior.current)
-          getEntityManager()?.add(vehicle.current)
+          hero.vehicle.steering.add(followPathBehavior.current)
         })
     },
-    [
-      sync,
-      getScene,
-      pathHelper,
-      getEntityManager,
-      setEntityManager,
-      createConvexRegionHelper,
-    ]
+    [sync, getScene, pathHelper, hero, createConvexRegionHelper]
   )
 
+  const navMeshHasBeenInitialized = useRef<boolean>(false)
+
+  useEffect((): void => {
+    if (
+      _.isNull(hero) ||
+      _.isNil(hero?.meshRef.current) ||
+      navMeshHasBeenInitialized.current
+    ) {
+      return
+    }
+
+    init(hero.meshRef.current)
+    navMeshHasBeenInitialized.current = true
+  }, [init, hero])
+
   return {
-    init,
     getScene,
     setScene,
     getCamera,
@@ -184,7 +188,6 @@ export function useNavMesh() {
     getRenderer,
     setRenderer,
     moveToPoint,
-    getEntityManager,
   }
 }
 

@@ -1,3 +1,4 @@
+import { MutableRefObject } from 'react'
 import { GroupProps } from '@react-three/fiber'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
@@ -17,7 +18,7 @@ export type GLTFResult = GLTF & {
 }
 
 export interface RogueComponent {
-  getGroupRef: () => THREE.Group | null
+  getGroupRef: () => MutableRefObject<THREE.Group | null>
 }
 
 export interface RogueProps {

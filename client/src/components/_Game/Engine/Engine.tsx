@@ -13,15 +13,12 @@ export function Engine({
   getScene,
   getCamera,
   getRenderer,
-  getEntityManager,
 }: EngineProps) {
   useFPS()
   useUnitsRelations()
-  useEntityManager(getEntityManager, getRenderer, getCamera, getScene)
+  useEntityManager(getRenderer, getCamera, getScene)
 
   return (
-    <engineContext.Provider value={getEntityManager}>
-      {children}
-    </engineContext.Provider>
+    <engineContext.Provider value={null}>{children}</engineContext.Provider>
   )
 }

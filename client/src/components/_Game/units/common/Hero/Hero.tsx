@@ -17,7 +17,7 @@ import { Unit } from '@/interfaces/unit'
 
 import { Config } from '@/constants/config'
 
-export default function Hero({ groupProps, onInitialized }: HeroProps) {
+export default function Hero({ groupProps }: HeroProps) {
   const [unitId] = useState<Unit['id']>(_.uniqueId())
 
   const meshRef = useRef<THREE.Mesh | null>(null)
@@ -41,13 +41,6 @@ export default function Hero({ groupProps, onInitialized }: HeroProps) {
   )
 
   useEffect((): void => {
-    onInitialized({
-      getGroup: getRogueComponent()?.getGroupRef,
-      getMesh: () => meshRef.current,
-    })
-  }, [onInitialized, getRogueComponent])
-
-  useEffect((): void => {
     createHero({
       id: unitId,
       name: 'Rogue',
@@ -62,10 +55,12 @@ export default function Hero({ groupProps, onInitialized }: HeroProps) {
       mana: 100,
       movementSpeed: 2.5,
       fieldOfView: 60,
+      groupRef: getRogueComponent()?.getGroupRef(),
+      meshRef: meshRef,
     })
 
     usePlayerStore.setState({ unitId })
-  }, [unitId, createHero])
+  }, [unitId, getRogueComponent, createHero])
 
   useFrame((): void => {
     const prevPosition: SimplePosition =

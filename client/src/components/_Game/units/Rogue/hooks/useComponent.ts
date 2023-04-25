@@ -9,6 +9,6 @@ export function useComponent(
   groupRef: MutableRefObject<Group | null>
 ): void {
   useEffect((): void => {
-    componentCallback({ getGroupRef: () => groupRef.current })
+    componentCallback({ getGroupRef: () => groupRef })
   }, [componentCallback, groupRef])
 }

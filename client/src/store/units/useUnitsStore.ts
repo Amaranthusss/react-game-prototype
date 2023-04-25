@@ -1,7 +1,10 @@
 import { devtools } from 'zustand/middleware'
 import { create } from 'zustand'
 import * as THREE from 'three'
+import * as YUKA from 'yuka'
 import _ from 'lodash'
+
+import { useAppStore } from '../app/useAppStore'
 
 import { CreateUnitNewHero, CreateUnitNewUnit } from './interface'
 import { UnitsStore } from './interface'
@@ -21,6 +24,7 @@ const getDefaultUnitValues = (
   | 'state'
   | 'attack'
   | 'lastUpdate'
+  | 'vehicle'
 > => {
   const defaultAttackDuration: number = 500
 
@@ -38,6 +42,11 @@ const getDefaultUnitValues = (
     duration: newUnit.attack?.duration ?? defaultAttackDuration,
   }
 
+  const vehicle: YUKA.Vehicle = new YUKA.Vehicle()
+  vehicle.name = `${newUnit.name} [${newUnit.id}]`
+
+  useAppStore.getState().entityManager.add(vehicle)
+
   return {
     maxHealth: newUnit.health,
     maxMana: newUnit.mana,
@@ -47,6 +56,7 @@ const getDefaultUnitValues = (
     targets: [],
     state: 'idle',
     lastUpdate: new Date().getTime(),
+    vehicle,
   }
 }
 

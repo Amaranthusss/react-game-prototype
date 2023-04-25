@@ -51,6 +51,7 @@ type defaultUnitValues =
   | 'target'
   | 'targets'
   | 'state'
+  | 'vehicle'
 
 type defaultHeroValues =
   | 'lastUpdate'
@@ -64,6 +65,7 @@ type defaultHeroValues =
   | 'level'
   | 'experience'
   | 'maxExperience'
+  | 'vehicle'
 
 interface UnitAttackWithNullishDefaults
   extends Omit<Pick<Unit, 'attack'>['attack'], 'duration'> {

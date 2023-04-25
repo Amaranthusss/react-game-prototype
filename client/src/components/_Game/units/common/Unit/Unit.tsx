@@ -1,8 +1,10 @@
 import { Cone, Ring } from '@react-three/drei'
 
-import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useUnitsStore } from '@/store/units/useUnitsStore'
+import { useAppStore } from '@/store/app/useAppStore'
 
+import { EntityManager } from 'yuka'
 import * as THREE from 'three'
 import _ from 'lodash'
 
@@ -11,14 +13,13 @@ import { CreateUnit } from '@/store/units/interface'
 import { UnitProps } from './Unit.interface'
 import { Unit } from '@/interfaces/unit'
 
-import { engineContext } from '@/components/_Game/Engine/Engine.context'
-
 export function Unit({ groupProps }: UnitProps): JSX.Element {
-  const getEntityManager = useContext(engineContext)
+  const entityManager: EntityManager = useAppStore.getState().entityManager
 
-  console.log('entityManager in creep', getEntityManager())
+  console.log('entityManager in creep', entityManager)
 
   const [unitId] = useState<Unit['id']>(_.uniqueId())
+
   const [randomPos] = useState<SimplePosition>([
     _.random(true) * 40,
     0,
@@ -44,6 +45,8 @@ export function Unit({ groupProps }: UnitProps): JSX.Element {
       mana: 100,
       movementSpeed: 2.5,
       fieldOfView: 80,
+      groupRef: groupRef,
+      meshRef: meshRef,
     })
 
     groupRef.current?.position.set(...randomPos)

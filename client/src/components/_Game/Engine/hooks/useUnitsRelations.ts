@@ -35,7 +35,7 @@ export function useUnitsRelations(): void {
             engine.rangePrecision
           )
 
-          console.log(name, 'is in range to', targetName, '-', rangeToTarget)
+          // console.log(name, 'is in range to', targetName, '-', rangeToTarget)
 
           const shouldBePulledByTargetUnit: boolean = _.lte(
             rangeToTarget,
@@ -53,7 +53,7 @@ export function useUnitsRelations(): void {
   }, [updateUnitParameter])
 
   useEffect((): (() => void) => {
-    const unitsRelationsDetection = setInterval(
+    const unitsRelationsDetection: NodeJS.Timer = setInterval(
       updateUnitsTargets,
       engine.unitsRelationsInterval
     )

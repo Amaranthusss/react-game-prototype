@@ -9,7 +9,6 @@ import { Bloom } from '@react-three/postprocessing'
 import { Arena } from './environment/Arena/Arena'
 import { Unit } from './units/common/Unit/Unit'
 
-import { useInitialization } from './hooks/useInitialization'
 import { useCallback } from 'react'
 import { useNavMesh } from '@/components/_Game/hooks/useNavMesh'
 
@@ -27,7 +26,6 @@ export function Game(): JSX.Element {
   // * Be careful with React states renders at this component level
 
   const {
-    init,
     getScene,
     setScene,
     getCamera,
@@ -35,16 +33,20 @@ export function Game(): JSX.Element {
     getRenderer,
     setRenderer,
     moveToPoint,
-    getEntityManager,
   } = useNavMesh()
 
-  const { onCharacterInitialized } = useInitialization(init)
-
-  const onContextMenu = useCallback(
+  const onMoveToPoint = useCallback(
     (event: ThreeEvent<MouseEvent>): void => {
       moveToPoint(event)
     },
     [moveToPoint]
+  )
+
+  const onLetsAttackUnit = useCallback(
+    (event: ThreeEvent<MouseEvent>): void => {
+      console.log(event)
+    },
+    []
   )
 
   return (
@@ -74,7 +76,6 @@ export function Game(): JSX.Element {
         />
 
         <Engine
-          getEntityManager={getEntityManager}
           getCamera={getCamera}
           getRenderer={getRenderer}
           getScene={getScene}
@@ -94,10 +95,9 @@ export function Game(): JSX.Element {
             <Suspense fallback={null}>
               <Physics>
                 <Lights />
-                <Arena groupProps={{ onContextMenu }} />
-                <Player onInitialized={onCharacterInitialized} />
-
-                <Unit />
+                <Arena groupProps={{ onContextMenu: onMoveToPoint }} />
+                <Player />
+                <Unit groupProps={{ onContextMenu: onLetsAttackUnit }} />
               </Physics>
             </Suspense>
           </Stage>
