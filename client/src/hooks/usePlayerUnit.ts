@@ -3,6 +3,7 @@ import { usePlayerStore } from '@/store/player/usePlayerStore'
 import { useUnitsStore } from '@/store/units/useUnitsStore'
 
 import { Hero } from '@/interfaces/hero'
+import { Unit } from '@/interfaces/unit'
 
 /**
  * Listens all changes at units store and returns player (hero) unit state
@@ -11,12 +12,16 @@ import { Hero } from '@/interfaces/hero'
 export function usePlayerUnit() {
   const [hero, setHero] = useState<Hero | null>(null)
 
-  const id = usePlayerStore(({ unitId }) => unitId)
-  const heroLastUpdate = (useUnitsStore.getState().list[id] as Hero | null)
-    ?.lastUpdate
+  const id: Unit['id'] = usePlayerStore(({ unitId }) => unitId)
+
+  const heroLastUpdate: number | undefined = useUnitsStore
+    .getState()
+    .list.get(id)?.lastUpdate
 
   useEffect((): void => {
-    setHero(useUnitsStore.getState().list[id] as Hero | null)
+    if (useUnitsStore.getState().list.has(id)) {
+      setHero(useUnitsStore.getState().list.get(id) as Hero)
+    }
   }, [heroLastUpdate, id])
 
   return { hero }

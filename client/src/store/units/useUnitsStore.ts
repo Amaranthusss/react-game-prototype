@@ -64,14 +64,15 @@ export const useUnitsStore = create<UnitsStore>()(
   devtools(
     (set, get): UnitsStore => {
       return {
-        list: new Map<Unit['id'], Unit | Hero>(),
+        list: new Map<Unit['id'], Unit | Hero>([]),
 
         findUnit: (idOfSearchedUnit: Unit['id']): Unit | Hero | null => {
+          console.log(get().list)
           return get().list.get(idOfSearchedUnit) ?? null
         },
 
         createUnit: (newUnit: CreateUnitNewUnit): Unit['id'] => {
-          const prevList: UnitsStore['list'] = get().list
+          const list: UnitsStore['list'] = get().list
           const findUnit: UnitsStore['findUnit'] = get().findUnit
 
           const isDefinied: boolean = !_.isNull(findUnit(newUnit.id))
@@ -81,7 +82,7 @@ export const useUnitsStore = create<UnitsStore>()(
               `${errorPath} / createUnit()
 							\n Tried to create a new unit with used before ID ${newUnit.id}
 							\n Units list:`,
-              prevList
+              list
             )
 
             return newUnit.id
@@ -92,13 +93,14 @@ export const useUnitsStore = create<UnitsStore>()(
             ...getDefaultUnitValues(newUnit),
           }
 
-          set({ list: { ...prevList, [newUnit.id]: unit } })
+          list.set(newUnit.id, unit)
+          set({ list })
 
           return unit.id
         },
 
         createHero: (newHero: CreateUnitNewHero): Unit['id'] => {
-          const prevList: UnitsStore['list'] = get().list
+          const list: UnitsStore['list'] = get().list
           const findUnit: UnitsStore['findUnit'] = get().findUnit
 
           const isDefinied: boolean = !_.isNull(findUnit(newHero.id))
@@ -108,7 +110,7 @@ export const useUnitsStore = create<UnitsStore>()(
               `${errorPath} / createHero()
 							\n Tried to create a new unit with used before ID ${newHero.id}
 							\n Units list:`,
-              prevList
+              list
             )
 
             return newHero.id
@@ -122,7 +124,8 @@ export const useUnitsStore = create<UnitsStore>()(
             maxExperience: 100,
           }
 
-          set({ list: { ...prevList, [newHero.id]: hero } })
+          list.set(newHero.id, hero)
+          set({ list })
 
           return hero.id
         },
