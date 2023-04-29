@@ -41,10 +41,20 @@ const getDefaultUnitValues = (
     duration: newUnit.attack?.duration ?? defaultAttackDuration,
   }
 
-  const vehicle: YUKA.Vehicle = new YUKA.Vehicle()
+  const entityManager: YUKA.EntityManager =
+    useGameStore.getState().entityManager
 
-  vehicle.name = newUnit.id
-  useGameStore.getState().entityManager.add(vehicle)
+  const isEntityDefinied: boolean = !_.isNull(
+    entityManager.getEntityByName(newUnit.id)
+  )
+
+  if (!isEntityDefinied) {
+    const vehicle: YUKA.Vehicle = new YUKA.Vehicle()
+
+    vehicle.name = newUnit.id
+
+    useGameStore.getState().entityManager.add(vehicle)
+  }
 
   return {
     maxHealth: newUnit.health,
@@ -100,12 +110,11 @@ export const useUnitsStore = create<UnitsStore>()(
         createHero: (newHero: CreateUnitNewHero): Unit['id'] => {
           const list: UnitsStore['list'] = get().list
           const findUnit: UnitsStore['findUnit'] = get().findUnit
-
-          const isDefinied: boolean = !_.isNull(findUnit(newHero.id))
-
           const playerName: string = useGameStore.getState().playerName
+          const isDefinied: boolean = !_.isNull(findUnit(newHero.id))
+          const isPlayerHero: boolean = _.isEqual(newHero.id, playerName)
 
-          if (isDefinied && !_.isEqual(newHero.id, playerName)) {
+          if (isDefinied && !isPlayerHero) {
             console.error(
               `${errorPath} / createHero()
 							\n Tried to create a new hero with used before ID ${newHero.id}
