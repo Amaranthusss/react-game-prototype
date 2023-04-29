@@ -3,14 +3,14 @@ import { Hero } from '@/interfaces/hero'
 import { Unit } from '@/interfaces/unit'
 
 export interface UnitsStore {
-  list: { [id: Unit['id']]: Unit | Hero }
+  list: Map<Unit['id'], Unit | Hero>
+  playerHeroId: Unit['id'] | null
+  getPlayerHero: GetPlayerHero
   findUnit: FindUnit
   createUnit: CreateUnit
   createHero: CreateHero
   removeUnit: RemoveUnit
   updateUnitParameter: UpdateUnitParameter
-  triggerAttackMelee: TriggerAttackMelee
-  triggerAttackRange: TriggerAttackRange
   tryAutoFindTarget: TryAutoFindTarget
   findWeakestTarget: FindWeakestTarget
   getDistanceBetweenUnits: GetDistanceBetweenUnits
@@ -18,8 +18,9 @@ export interface UnitsStore {
 }
 
 export type FindUnit = (idOfSearchedUnit: Unit['id']) => Unit | Hero | null
+export type GetPlayerHero = () => Hero | null
 export type CreateUnit = (newUnit: CreateUnitNewUnit) => Unit['id']
-export type CreateHero = (newHero: CreateUnitNewHero) => Unit['id']
+export type CreateHero = (newHero: CreateUnitNewHero) => Hero['id']
 export type RemoveUnit = (idOfUnitToRemove: Unit['id']) => void
 export type TryAutoFindTarget = (idOfMatchingUnit: Unit['id']) => void
 export type FindWeakestTarget = (idOfMatchingUnit: Unit['id']) => Unit['id']
@@ -27,14 +28,6 @@ export type UpdateUnitParameter = <T extends keyof Unit>(
   idUnitToUpdate: Unit['id'],
   stat: T,
   value: (Unit | Hero)[T]
-) => void
-export type TriggerAttackRange = (
-  idOfAttackingUnit: Unit['id'],
-  idOfAttackedUnit: Unit['id']
-) => void
-export type TriggerAttackMelee = (
-  idOfAttackingUnit: Unit['id'],
-  idOfAttackedUnit: Unit['id']
 ) => void
 export type GetDistanceBetweenUnits = (
   idOfFirstUnit: Unit['id'],

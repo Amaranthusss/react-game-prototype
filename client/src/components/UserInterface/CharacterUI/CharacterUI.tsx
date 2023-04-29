@@ -1,6 +1,6 @@
 import { Portrait } from './Portrait/Portrait'
 
-import { usePlayerUnit } from '@/hooks/usePlayerUnit'
+import { usePlayer } from '@/hooks/usePlayer'
 
 import { toPercents } from '@/utils/toPercents'
 import _ from 'lodash'
@@ -8,18 +8,18 @@ import _ from 'lodash'
 import styles from './CharacterUI.module.scss'
 
 export function CharacterUI(): JSX.Element {
-  const { hero } = usePlayerUnit()
+  const { playerHero } = usePlayer()
 
-  if (_.isNil(hero)) {
+  if (_.isNil(playerHero)) {
     return <span />
   }
 
   return (
     <div className={styles.container}>
       <Portrait
-        level={hero.level}
-        healthPercent={toPercents(hero.health, hero.maxHealth)}
-        manaPercent={toPercents(hero.mana, hero.maxMana)}
+        level={playerHero.level}
+        healthPercent={toPercents(playerHero.health, playerHero.maxHealth)}
+        manaPercent={toPercents(playerHero.mana, playerHero.maxMana)}
       />
     </div>
   )

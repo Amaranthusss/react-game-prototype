@@ -1,7 +1,10 @@
 import { devtools } from 'zustand/middleware'
 import { create } from 'zustand'
 import * as THREE from 'three'
+import * as YUKA from 'yuka'
 import _ from 'lodash'
+
+import { useGameStore } from '../game/useGameStore'
 
 import { CreateUnitNewHero, CreateUnitNewUnit } from './interface'
 import { UnitsStore } from './interface'
@@ -38,6 +41,11 @@ const getDefaultUnitValues = (
     duration: newUnit.attack?.duration ?? defaultAttackDuration,
   }
 
+  const vehicle: YUKA.Vehicle = new YUKA.Vehicle()
+
+  vehicle.name = newUnit.id
+  useGameStore.getState().entityManager.add(vehicle)
+
   return {
     maxHealth: newUnit.health,
     maxMana: newUnit.mana,
@@ -54,14 +62,15 @@ export const useUnitsStore = create<UnitsStore>()(
   devtools(
     (set, get): UnitsStore => {
       return {
-        list: {},
+        list: new Map<Unit['id'], Unit | Hero>([]),
+        playerHeroId: null,
 
         findUnit: (idOfSearchedUnit: Unit['id']): Unit | Hero | null => {
-          return get().list?.[idOfSearchedUnit] ?? null
+          return get().list.get(idOfSearchedUnit) ?? null
         },
 
         createUnit: (newUnit: CreateUnitNewUnit): Unit['id'] => {
-          const prevList: UnitsStore['list'] = get().list
+          const list: UnitsStore['list'] = get().list
           const findUnit: UnitsStore['findUnit'] = get().findUnit
 
           const isDefinied: boolean = !_.isNull(findUnit(newUnit.id))
@@ -71,7 +80,7 @@ export const useUnitsStore = create<UnitsStore>()(
               `${errorPath} / createUnit()
 							\n Tried to create a new unit with used before ID ${newUnit.id}
 							\n Units list:`,
-              prevList
+              list
             )
 
             return newUnit.id
@@ -82,23 +91,26 @@ export const useUnitsStore = create<UnitsStore>()(
             ...getDefaultUnitValues(newUnit),
           }
 
-          set({ list: { ...prevList, [newUnit.id]: unit } })
+          list.set(newUnit.id, unit)
+          set({ list })
 
-          return unit.id
+          return newUnit.id
         },
 
         createHero: (newHero: CreateUnitNewHero): Unit['id'] => {
-          const prevList: UnitsStore['list'] = get().list
+          const list: UnitsStore['list'] = get().list
           const findUnit: UnitsStore['findUnit'] = get().findUnit
 
           const isDefinied: boolean = !_.isNull(findUnit(newHero.id))
 
-          if (isDefinied) {
+          const playerName: string = useGameStore.getState().playerName
+
+          if (isDefinied && !_.isEqual(newHero.id, playerName)) {
             console.error(
               `${errorPath} / createHero()
-							\n Tried to create a new unit with used before ID ${newHero.id}
+							\n Tried to create a new hero with used before ID ${newHero.id}
 							\n Units list:`,
-              prevList
+              list
             )
 
             return newHero.id
@@ -112,15 +124,17 @@ export const useUnitsStore = create<UnitsStore>()(
             maxExperience: 100,
           }
 
-          set({ list: { ...prevList, [newHero.id]: hero } })
+          list.set(newHero.id, hero)
+          set({ list })
 
-          return hero.id
+          return newHero.id
         },
 
         removeUnit: (idOfUnitToRemove: Unit['id']): void => {
-          const prevList: UnitsStore['list'] = get().list
+          const list: UnitsStore['list'] = get().list
 
-          set({ list: _.omit(prevList, idOfUnitToRemove) })
+          list.delete(idOfUnitToRemove)
+          set({ list })
         },
 
         updateUnitParameter: <T extends keyof Unit>(
@@ -130,11 +144,29 @@ export const useUnitsStore = create<UnitsStore>()(
         ): void => {
           const { list, tryAutoFindTarget } = get()
 
-          list[idUnitToUpdate] = {
-            ...list[idUnitToUpdate],
+          const previousUnitData: Unit | Hero | undefined =
+            list.get(idUnitToUpdate)
+
+          if (_.isUndefined(previousUnitData)) {
+            console.error(
+              `${errorPath} / updateUnitParameter()
+							\n Cannot update unit parameter because unit with ID ${idUnitToUpdate} couldn't be found
+							\n Units list:`,
+              list
+            )
+
+            return
+          }
+
+          const previousValue: (Unit | Hero)[T] = previousUnitData[stat]
+
+          if (_.isEqual(value, previousValue)) return
+
+          list.set(idUnitToUpdate, {
+            ...previousUnitData,
             [stat]: value,
             lastUpdate: new Date().getTime(),
-          }
+          })
 
           set({ list })
 
@@ -143,6 +175,16 @@ export const useUnitsStore = create<UnitsStore>()(
               tryAutoFindTarget(idUnitToUpdate)
               break
           }
+        },
+
+        getPlayerHero: (): Hero | null => {
+          const { findUnit, playerHeroId } = get()
+
+          if (_.isNull(playerHeroId)) {
+            return null
+          }
+
+          return findUnit(playerHeroId) as Hero | null
         },
 
         getDistanceBetweenUnits: (
@@ -199,16 +241,6 @@ export const useUnitsStore = create<UnitsStore>()(
             : UnitType.Range
         },
 
-        triggerAttackMelee: (
-          idOfAttackingUnit: Unit['id'],
-          idOfAttackedUnit: Unit['id']
-        ): void => {},
-
-        triggerAttackRange: (
-          idOfAttackingUnit: Unit['id'],
-          idOfAttackedUnit: Unit['id']
-        ): void => {},
-
         tryAutoFindTarget: (matchingUnitId: Unit['id']): void => {
           const { findUnit, list, updateUnitParameter, findWeakestTarget } =
             get()
@@ -257,7 +289,8 @@ export const useUnitsStore = create<UnitsStore>()(
           }
 
           const getTargetWithLowestHealth = (): Unit['id'] => {
-            return _.chain(list)
+            return _.chain(Array.from(list))
+              .map((unit) => unit[1])
               .sortBy(({ mana }) => mana)
               .reverse()
               .find(({ id }: Unit | Hero): boolean =>
