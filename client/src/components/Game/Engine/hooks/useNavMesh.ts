@@ -9,24 +9,16 @@ import _ from 'lodash'
 
 import { RootState, ThreeEvent } from '@react-three/fiber'
 import { CreateHero } from '@/store/units/interface'
+import { GameCanvas } from '../../Game.interface'
 
 const navMeshUrl: string = '/models/arena/navmesh.glb'
 
-export function useNavMesh(playerName: string) {
+export function useNavMesh(
+  playerName: string,
+  getCanvas: () => GameCanvas | undefined
+) {
   const entityManager: YUKA.EntityManager = useGameStore(
     ({ entityManager }) => entityManager
-  )
-
-  const scene: RootState['scene'] | undefined = useGameStore(
-    ({ scene }) => scene
-  )
-
-  const camera: RootState['camera'] | undefined = useGameStore(
-    ({ camera }) => camera
-  )
-
-  const renderer: RootState['gl'] | undefined = useGameStore(
-    ({ renderer }) => renderer
   )
 
   const createHero: CreateHero = useUnitsStore(({ createHero }) => createHero)
@@ -124,6 +116,9 @@ export function useNavMesh(playerName: string) {
 
   const moveToPoint = useCallback(
     (event: ThreeEvent<MouseEvent>): void => {
+      const camera: RootState['camera'] | undefined = getCanvas()?.camera
+      const renderer: RootState['gl'] | undefined = getCanvas()?.renderer
+
       if (_.isUndefined(renderer) || _.isUndefined(camera)) {
         console.error(`${errorPath} / moveToPoint()
 				\n Renderer or camera is undefined
@@ -160,11 +155,13 @@ export function useNavMesh(playerName: string) {
         findPathTo(vehicle, new YUKA.Vector3().copy(firstPoint))
       }
     },
-    [camera, renderer, findPathTo, vehicle]
+    [getCanvas, findPathTo, vehicle]
   )
 
   const init = useCallback(
     (nextVehicleMesh: THREE.Mesh): void => {
+      const scene: RootState['scene'] | undefined = getCanvas()?.scene
+
       if (_.isUndefined(scene)) {
         console.error(`${errorPath} / moveToPoint()
 				\n Scene is undefined`)
@@ -209,7 +206,7 @@ export function useNavMesh(playerName: string) {
           vehicle.steering.add(followPathBehavior.current)
         })
     },
-    [sync, scene, pathHelper, vehicle, createConvexRegionHelper]
+    [sync, getCanvas, pathHelper, vehicle, createConvexRegionHelper]
   )
 
   return { init, moveToPoint }

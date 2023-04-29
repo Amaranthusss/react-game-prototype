@@ -8,11 +8,11 @@ import { Bloom } from '@react-three/postprocessing'
 import { Unit } from './units/Unit/Unit'
 
 import { useCallback } from 'react'
-import { useGameStore } from '@/store/game/useGameStore'
+import { useRefState } from '@/hooks/useRefState'
 
 import _ from 'lodash'
 
-import { SetCamera, SetRenderer, SetScene } from '@/store/game/interface'
+import { GameCanvas } from './Game.interface'
 import { ThreeEvent } from '@react-three/fiber'
 import { RootState } from '@react-three/fiber'
 
@@ -28,20 +28,15 @@ export function Game(): JSX.Element {
     []
   )
 
-  const setScene: SetScene = useGameStore(({ setScene }) => setScene)
-  const setCamera: SetCamera = useGameStore(({ setCamera }) => setCamera)
-  const setRenderer: SetRenderer = useGameStore(
-    ({ setRenderer }) => setRenderer
-  )
+  // * Canvas objects're too large to be stored in the game store
+  const { get: getCanvas, set: setCanvas } = useRefState<GameCanvas>()
 
   return (
     <div className={styles.container}>
       <Canvas
         shadows
         onCreated={({ gl, scene, camera }: RootState): void => {
-          setScene(scene)
-          setCamera(camera)
-          setRenderer(gl)
+          setCanvas({ scene, camera, renderer: gl })
         }}
       >
         <OrbitControls />
@@ -60,7 +55,7 @@ export function Game(): JSX.Element {
           speed={1}
         />
 
-        <Engine>
+        <Engine getCanvas={getCanvas}>
           <Stage
             intensity={0.5}
             preset={'rembrandt'}

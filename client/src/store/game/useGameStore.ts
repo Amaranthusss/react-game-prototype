@@ -3,7 +3,6 @@ import { create } from 'zustand'
 import _ from 'lodash'
 import * as YUKA from 'yuka'
 
-import { RootState } from '@react-three/fiber'
 import { GameStore } from './interface'
 import { Unit } from '@/interfaces/unit'
 
@@ -16,9 +15,6 @@ export const useGameStore = create<GameStore>()(
         fps: 0,
         playerName: 'amaranthus',
         entityManager,
-        camera: undefined,
-        renderer: undefined,
-        scene: undefined,
 
         getVehicles: (ids?: Unit['id'][] | undefined): YUKA.Vehicle[] => {
           const { entityManager } = get()
@@ -54,9 +50,6 @@ export const useGameStore = create<GameStore>()(
         },
 
         setFps: (fps: number) => set({ fps }),
-        setScene: (scene: RootState['scene']) => set({ scene }),
-        setCamera: (camera: RootState['camera']) => set({ camera }),
-        setRenderer: (renderer: RootState['gl']) => set({ renderer }),
       }
     },
     { name: 'game-storage' }

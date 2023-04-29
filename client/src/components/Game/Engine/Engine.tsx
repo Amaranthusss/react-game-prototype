@@ -19,10 +19,10 @@ import { engineContext } from '@/components/Game/Engine/Engine.context'
 
 const Player = lazy(() => import('@/components/Game/units/Hero/Hero'))
 
-export function Engine({ children }: EngineProps) {
+export function Engine({ children, getCanvas }: EngineProps) {
   const playerName: string = useGameStore(({ playerName }) => playerName)
 
-  const { init, moveToPoint } = useNavMesh(playerName)
+  const { init, moveToPoint } = useNavMesh(playerName, getCanvas)
 
   const onMoveToPoint = useCallback(
     (event: ThreeEvent<MouseEvent>): void => {
