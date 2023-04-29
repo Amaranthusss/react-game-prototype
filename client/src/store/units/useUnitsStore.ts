@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import * as YUKA from 'yuka'
 import _ from 'lodash'
 
-import { useAppStore } from '../app/useAppStore'
+import { useGameStore } from '../game/useGameStore'
 
 import { CreateUnitNewHero, CreateUnitNewUnit } from './interface'
 import { UnitsStore } from './interface'
@@ -24,7 +24,6 @@ const getDefaultUnitValues = (
   | 'state'
   | 'attack'
   | 'lastUpdate'
-  | 'vehicle'
 > => {
   const defaultAttackDuration: number = 500
 
@@ -43,9 +42,9 @@ const getDefaultUnitValues = (
   }
 
   const vehicle: YUKA.Vehicle = new YUKA.Vehicle()
-  vehicle.name = `${newUnit.name} [${newUnit.id}]`
 
-  useAppStore.getState().entityManager.add(vehicle)
+  vehicle.name = newUnit.id
+  useGameStore.getState().entityManager.add(vehicle)
 
   return {
     maxHealth: newUnit.health,
@@ -56,7 +55,6 @@ const getDefaultUnitValues = (
     targets: [],
     state: 'idle',
     lastUpdate: new Date().getTime(),
-    vehicle,
   }
 }
 
@@ -65,9 +63,9 @@ export const useUnitsStore = create<UnitsStore>()(
     (set, get): UnitsStore => {
       return {
         list: new Map<Unit['id'], Unit | Hero>([]),
+        playerHeroId: null,
 
         findUnit: (idOfSearchedUnit: Unit['id']): Unit | Hero | null => {
-          console.log(get().list)
           return get().list.get(idOfSearchedUnit) ?? null
         },
 
@@ -96,7 +94,7 @@ export const useUnitsStore = create<UnitsStore>()(
           list.set(newUnit.id, unit)
           set({ list })
 
-          return unit.id
+          return newUnit.id
         },
 
         createHero: (newHero: CreateUnitNewHero): Unit['id'] => {
@@ -105,10 +103,12 @@ export const useUnitsStore = create<UnitsStore>()(
 
           const isDefinied: boolean = !_.isNull(findUnit(newHero.id))
 
-          if (isDefinied) {
+          const playerName: string = useGameStore.getState().playerName
+
+          if (isDefinied && !_.isEqual(newHero.id, playerName)) {
             console.error(
               `${errorPath} / createHero()
-							\n Tried to create a new unit with used before ID ${newHero.id}
+							\n Tried to create a new hero with used before ID ${newHero.id}
 							\n Units list:`,
               list
             )
@@ -127,7 +127,7 @@ export const useUnitsStore = create<UnitsStore>()(
           list.set(newHero.id, hero)
           set({ list })
 
-          return hero.id
+          return newHero.id
         },
 
         removeUnit: (idOfUnitToRemove: Unit['id']): void => {
@@ -175,6 +175,16 @@ export const useUnitsStore = create<UnitsStore>()(
               tryAutoFindTarget(idUnitToUpdate)
               break
           }
+        },
+
+        getPlayerHero: (): Hero | null => {
+          const { findUnit, playerHeroId } = get()
+
+          if (_.isNull(playerHeroId)) {
+            return null
+          }
+
+          return findUnit(playerHeroId) as Hero | null
         },
 
         getDistanceBetweenUnits: (

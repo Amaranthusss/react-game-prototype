@@ -4,6 +4,8 @@ import { Unit } from '@/interfaces/unit'
 
 export interface UnitsStore {
   list: Map<Unit['id'], Unit | Hero>
+  playerHeroId: Unit['id'] | null
+  getPlayerHero: GetPlayerHero
   findUnit: FindUnit
   createUnit: CreateUnit
   createHero: CreateHero
@@ -16,8 +18,9 @@ export interface UnitsStore {
 }
 
 export type FindUnit = (idOfSearchedUnit: Unit['id']) => Unit | Hero | null
+export type GetPlayerHero = () => Hero | null
 export type CreateUnit = (newUnit: CreateUnitNewUnit) => Unit['id']
-export type CreateHero = (newHero: CreateUnitNewHero) => Unit['id']
+export type CreateHero = (newHero: CreateUnitNewHero) => Hero['id']
 export type RemoveUnit = (idOfUnitToRemove: Unit['id']) => void
 export type TryAutoFindTarget = (idOfMatchingUnit: Unit['id']) => void
 export type FindWeakestTarget = (idOfMatchingUnit: Unit['id']) => Unit['id']
@@ -41,7 +44,6 @@ type defaultUnitValues =
   | 'target'
   | 'targets'
   | 'state'
-  | 'vehicle'
 
 type defaultHeroValues =
   | 'lastUpdate'
@@ -55,7 +57,6 @@ type defaultHeroValues =
   | 'level'
   | 'experience'
   | 'maxExperience'
-  | 'vehicle'
 
 interface UnitAttackWithNullishDefaults
   extends Omit<Pick<Unit, 'attack'>['attack'], 'duration'> {

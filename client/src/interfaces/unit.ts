@@ -1,9 +1,7 @@
-import { MutableRefObject } from 'react'
 import { SimplePosition } from './simplePosition'
 import { AttackType } from './attackType'
 import { ArmorType } from './armorType'
 import { UnitState } from './unitState'
-import { Vehicle } from 'yuka'
 
 export interface Unit {
   id: string
@@ -36,9 +34,6 @@ export interface Unit {
     model?: JSX.Element
   }
   bonus: { source: string; value: number; stat: BonusStatName }[]
-  vehicle: Vehicle
-  meshRef: MutableRefObject<THREE.Mesh | null>
-  groupRef: MutableRefObject<THREE.Group | null>
 }
 
 type BonusStatName =

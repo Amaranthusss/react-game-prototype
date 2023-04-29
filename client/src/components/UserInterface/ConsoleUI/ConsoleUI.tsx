@@ -1,9 +1,11 @@
-import { useAppStore } from '@/store/app/useAppStore'
+import { useGameStore } from '@/store/game/useGameStore'
+
+import { shallow } from 'zustand/shallow'
 
 import styles from './ConsoleUI.module.scss'
 
 export function ConsoleUI(): JSX.Element {
-  const fps: number = useAppStore().fps
+  const fps: number = useGameStore(({ fps }) => fps, shallow)
 
   const APP_VERSION: string | undefined = process.env.npm_package_version
 

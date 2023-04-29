@@ -9,16 +9,17 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 ## Releases:
 
 <details>
-<summary>v0.1.1 - Prototype (2023-04-25)</summary>
+<summary>v0.1.1 - Prototype (2023-04-29)</summary>
 
 ### Bug fixes:
-
-- 🐲 Mesh references connected to units store
+- 🐲 Restructured the project
+- 🐲 Optimized Zustand stores
+- 🐲 Removed unused cannon physics engine
+- 🐲 Refactores stores
 - 🐲 Isolated rogue model from hero component
 - 🐲 Entity manager moved to app store
 
 ### New features:
-
 - 🐲 Scene loading indicator
 - 🐲 Each unit has YukaJS vehicle
 </details>
@@ -27,7 +28,6 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 <summary>v0.1.0 - Prototype (before 2023-04-24)</summary>
 
 ### New features:
-
 - 🐲 Initialized UI prototype - ReactJS
 - 🐲 Prepared a simply 3D scene - ThreeJS, ReactThree
 - 🐲 Included path finding movement system - YukaJS

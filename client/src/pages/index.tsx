@@ -1,5 +1,5 @@
 import { UserInterface } from '@/components/UserInterface/UserInterface'
-import { Game } from '@/components/_Game/Game'
+import { Game } from '@/components/Game/Game'
 
 export default function Application(): JSX.Element {
   return (
