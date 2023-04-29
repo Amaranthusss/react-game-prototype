@@ -305,7 +305,7 @@ export const useUnitsStore = create<UnitsStore>()(
         },
       }
     },
-    { name: 'units-storage' }
+    { name: 'units-storage', serialize: { options: { map: true } } }
   )
 )
 
