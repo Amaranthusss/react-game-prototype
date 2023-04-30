@@ -6,7 +6,7 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 
 ![Preview](/git/preview.jpg)
 
-| Icons: | 🐲 Front-End (client) |     | 🌐 Back-End (server) |
+| Legend: | 🐲 Front-End (client) |     | 🌐 Back-End (server) |
 | ------ | --------------------- | --- | -------------------- |
 
 ## Releases:

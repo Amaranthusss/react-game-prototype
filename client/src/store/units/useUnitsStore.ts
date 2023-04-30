@@ -73,7 +73,6 @@ export const useUnitsStore = create<UnitsStore>()(
     (set, get): UnitsStore => {
       return {
         list: new Map<Unit['id'], Unit | Hero>([]),
-        playerHeroId: null,
 
         findUnit: (idOfSearchedUnit: Unit['id']): Unit | Hero | null => {
           return get().list.get(idOfSearchedUnit) ?? null
@@ -187,7 +186,8 @@ export const useUnitsStore = create<UnitsStore>()(
         },
 
         getPlayerHero: (): Hero | null => {
-          const { findUnit, playerHeroId } = get()
+          const { findUnit } = get()
+          const playerHeroId: string = useGameStore.getState().playerName
 
           if (_.isNull(playerHeroId)) {
             return null

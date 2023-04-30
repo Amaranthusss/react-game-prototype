@@ -55,24 +55,22 @@ export function Game(): JSX.Element {
           speed={1}
         />
 
-        <Engine getCanvas={getCanvas}>
-          <Stage
-            intensity={0.5}
-            preset={'rembrandt'}
-            adjustCamera={1}
-            shadows={{
-              type: 'accumulative',
-              color: 'black',
-              colorBlend: 2,
-              opacity: 2,
-            }}
-            environment={'city'}
-          >
-            <Suspense fallback={<Loading />}>
-              <Unit groupProps={{ onContextMenu: onLetsAttackUnit }} />
-            </Suspense>
-          </Stage>
-        </Engine>
+        <Suspense fallback={<Loading />}>
+          <Engine getCanvas={getCanvas}>
+            <Stage
+              intensity={0.5}
+              preset={'rembrandt'}
+              adjustCamera={1}
+              shadows={{
+                type: 'accumulative',
+                color: 'black',
+                colorBlend: 2,
+                opacity: 2,
+              }}
+              environment={'city'}
+            />
+          </Engine>
+        </Suspense>
       </Canvas>
     </div>
   )

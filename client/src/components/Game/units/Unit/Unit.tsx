@@ -2,6 +2,7 @@ import { Sphere, Ring } from '@react-three/drei'
 
 import { useEffect, useRef, useState } from 'react'
 import { useUnitsStore } from '@/store/units/useUnitsStore'
+import { useUITarget } from '../hooks/useUITarget'
 
 import * as THREE from 'three'
 import _ from 'lodash'
@@ -27,6 +28,8 @@ export function Unit({ groupProps }: UnitProps): JSX.Element {
   const groupRef = useRef<THREE.Group | null>(null)
   const meshRef = useRef<THREE.Mesh | null>(null)
 
+  const { onUITarget } = useUITarget(unitId, groupProps)
+
   useEffect((): void => {
     createUnit({
       id: unitId,
@@ -44,7 +47,7 @@ export function Unit({ groupProps }: UnitProps): JSX.Element {
   }, [unitId, createUnit, randomPos])
 
   return (
-    <group {...groupProps} ref={groupRef}>
+    <group {...groupProps} ref={groupRef} onClick={onUITarget}>
       <mesh ref={meshRef}>
         <Sphere castShadow />
         <Ring args={[8.5]} rotation={[Math.PI / 2, 0, 0]} castShadow>

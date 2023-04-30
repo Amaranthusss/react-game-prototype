@@ -2,7 +2,6 @@ import { useUnitsStore } from '@/store/units/useUnitsStore'
 import { usePlayer } from '@/hooks/usePlayer'
 import { useMemo } from 'react'
 
-import { shallow } from 'zustand/shallow'
 import _ from 'lodash'
 
 import { FindUnit } from '@/store/units/interface'
@@ -12,7 +11,7 @@ import styles from './StatsUI.module.scss'
 export function StatsUI(): JSX.Element {
   const { playerHero } = usePlayer()
 
-  const findUnit: FindUnit = useUnitsStore(({ findUnit }) => findUnit, shallow)
+  const findUnit: FindUnit = useUnitsStore(({ findUnit }) => findUnit)
 
   const targetUnit = useMemo(() => {
     if (_.isNil(playerHero?.target) || playerHero?.target == null) {

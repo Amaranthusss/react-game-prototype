@@ -4,7 +4,6 @@ import { Unit } from '@/interfaces/unit'
 
 export interface UnitsStore {
   list: Map<Unit['id'], Unit | Hero>
-  playerHeroId: Unit['id'] | null
   getPlayerHero: GetPlayerHero
   findUnit: FindUnit
   createUnit: CreateUnit

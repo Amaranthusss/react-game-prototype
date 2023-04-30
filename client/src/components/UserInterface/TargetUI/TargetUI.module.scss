@@ -1,0 +1,25 @@
+@import '/src/styles/theme.scss';
+
+.container {
+  position: absolute;
+  bottom: 20px;
+  left: 0px;
+  right: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  width: calc(100vw - 2 * (267px - 20px));
+  max-width: 300px;
+  background-color: $emptyColor;
+  padding: $interfacePadding;
+  font-size: $interfaceFontSize;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.container .name {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}

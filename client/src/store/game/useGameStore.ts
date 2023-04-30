@@ -9,12 +9,11 @@ import { Unit } from '@/interfaces/unit'
 export const useGameStore = create<GameStore>()(
   devtools(
     (set, get): GameStore => {
-      const entityManager = new YUKA.EntityManager()
-
       return {
         fps: 0,
-        playerName: 'amaranthus',
-        entityManager,
+        playerName: 'Amaranthus',
+        uiTargetId: undefined,
+        entityManager: new YUKA.EntityManager(),
 
         getVehicles: (ids?: Unit['id'][] | undefined): YUKA.Vehicle[] => {
           const { entityManager } = get()
@@ -50,6 +49,7 @@ export const useGameStore = create<GameStore>()(
         },
 
         setFps: (fps: number) => set({ fps }),
+        setUITargetId: (uiTargetId: Unit['id']) => set({ uiTargetId }),
       }
     },
     { name: 'game-storage' }

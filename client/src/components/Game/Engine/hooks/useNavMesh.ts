@@ -163,7 +163,7 @@ export function useNavMesh(
       const scene: RootState['scene'] | undefined = getCanvas()?.scene
 
       if (_.isUndefined(scene)) {
-        console.error(`${errorPath} / moveToPoint()
+        console.error(`${errorPath} / init()
 				\n Scene is undefined`)
         return
       }
@@ -171,7 +171,7 @@ export function useNavMesh(
       // Path helper
       pathHelper.current.visible = false
       scene.add(pathHelper.current)
-      console.log('initialized')
+
       // Vehicle
       nextVehicleMesh.matrixAutoUpdate = false
 
@@ -204,6 +204,8 @@ export function useNavMesh(
           vehicle.setRenderComponent(nextVehicleMesh, sync)
           followPathBehavior.current.active = false
           vehicle.steering.add(followPathBehavior.current)
+
+          console.log('%c[NavMesh] Initialized', 'color: gray')
         })
     },
     [sync, getCanvas, pathHelper, vehicle, createConvexRegionHelper]
