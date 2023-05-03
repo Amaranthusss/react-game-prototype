@@ -54,6 +54,7 @@ export default function Hero({ groupProps, id, init }: HeroProps) {
       mana: 100,
       movementSpeed: 2.5,
       fieldOfView: 60,
+      icon: getRogueComponent().getIcon(),
     })
   }, [unitId, getRogueComponent, createHero])
 

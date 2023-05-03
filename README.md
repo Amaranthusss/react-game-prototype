@@ -18,6 +18,10 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 
 - 🐲 Moved canvas objects from the game store to React references
 
+### New features:
+
+- 🐲 Target at the user interface
+
 </details>
 
 <details>

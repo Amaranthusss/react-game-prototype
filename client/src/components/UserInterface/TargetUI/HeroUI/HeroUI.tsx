@@ -1,20 +1,21 @@
 import Image from 'next/image'
 
+import _ from 'lodash'
+
+import { Specialisation } from '@/interfaces/specialisation'
 import { HeroUIProps } from './HeroUI.interface'
 
-import melee from '@/assets/icons/melee.jpg'
-import leather from '@/assets/icons/leather.jpg'
-import agility from '@/assets/icons/agility.jpg'
-import strength from '@/assets/icons/strength.jpg'
 import intellect from '@/assets/icons/intellect.jpg'
+import strength from '@/assets/icons/strength.jpg'
+import agility from '@/assets/icons/agility.jpg'
+import leather from '@/assets/icons/leather.jpg'
+import melee from '@/assets/icons/melee.jpg'
 
 import styles from './HeroUI.module.scss'
-import _ from 'lodash'
-import { Specialisation } from '@/interfaces/specialisation'
 
 export function HeroUI({ hero }: HeroUIProps): JSX.Element {
   return (
-    <>
+    <div>
       <div className={styles.level}>
         Level&nbsp;{hero.level}&nbsp;{hero.name}
       </div>
@@ -44,7 +45,7 @@ export function HeroUI({ hero }: HeroUIProps): JSX.Element {
             />
 
             <div className={styles.text}>
-              <span className={styles.caption}>Damage:</span>
+              <span className={styles.caption}>Armor:</span>
               <span>{hero.defence.value}</span>
             </div>
           </div>
@@ -78,6 +79,6 @@ export function HeroUI({ hero }: HeroUIProps): JSX.Element {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

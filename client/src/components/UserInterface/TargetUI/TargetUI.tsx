@@ -1,17 +1,18 @@
+import { PortraitUI } from './PortraitUI/PortraitUI'
+import { HeroUI } from './HeroUI/HeroUI'
+
 import { useUnitsStore } from '@/store/units/useUnitsStore'
 import { useGameStore } from '@/store/game/useGameStore'
-
 import { useMemo } from 'react'
 
 import _ from 'lodash'
 
 import { FindUnit } from '@/store/units/interface'
+import { UnitUI } from './UnitUI/UnitUI'
+import { Hero } from '@/interfaces/hero'
 import { Unit } from '@/interfaces/unit'
 
 import styles from './TargetUI.module.scss'
-import Image from 'next/image'
-import { Hero } from '@/interfaces/hero'
-import { HeroUI } from './HeroUI/HeroUI'
 
 export function TargetUI(): JSX.Element {
   const uiTargetId: Unit['id'] | undefined = useGameStore(
@@ -39,10 +40,18 @@ export function TargetUI(): JSX.Element {
 
   return (
     <div className={styles.container}>
-      <div className={styles.name}>
-        {uiTargetUnit.name}&nbsp;#{uiTargetUnit.id}
+      <PortraitUI unit={uiTargetUnit} />
+
+      <div className={styles.info}>
+        <div className={styles.name}>
+          {uiTargetUnit.name}&nbsp;#{uiTargetUnit.id}
+        </div>
+        {isHero ? (
+          <HeroUI hero={uiTargetUnit as Hero} />
+        ) : (
+          <UnitUI unit={uiTargetUnit} />
+        )}
       </div>
-      {isHero ? <HeroUI hero={uiTargetUnit as Hero} /> : <span />}
     </div>
   )
 }

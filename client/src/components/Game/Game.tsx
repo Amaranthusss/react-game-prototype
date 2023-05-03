@@ -5,28 +5,18 @@ import { Loading } from './Loading/Loading'
 import { Engine } from './Engine/Engine'
 import { Canvas } from '@react-three/fiber'
 import { Bloom } from '@react-three/postprocessing'
-import { Unit } from './units/Unit/Unit'
 
-import { useCallback } from 'react'
 import { useRefState } from '@/hooks/useRefState'
 
 import _ from 'lodash'
 
 import { GameCanvas } from './Game.interface'
-import { ThreeEvent } from '@react-three/fiber'
 import { RootState } from '@react-three/fiber'
 
 import styles from './Game.module.scss'
 
 export function Game(): JSX.Element {
   console.log('%cGame rendered', 'color: green')
-
-  const onLetsAttackUnit = useCallback(
-    (event: ThreeEvent<MouseEvent>): void => {
-      console.log(event)
-    },
-    []
-  )
 
   // * Canvas objects're too large to be stored in the game store
   const { get: getCanvas, set: setCanvas } = useRefState<GameCanvas>()

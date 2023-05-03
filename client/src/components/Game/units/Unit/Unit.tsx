@@ -12,6 +12,8 @@ import { CreateUnit } from '@/store/units/interface'
 import { UnitProps } from './Unit.interface'
 import { Unit } from '@/interfaces/unit'
 
+import creepIcon from '@/assets/icons/creep.jpg'
+
 export function Unit({ groupProps }: UnitProps): JSX.Element {
   console.log('%cUnit rendered', 'color: green')
 
@@ -41,6 +43,7 @@ export function Unit({ groupProps }: UnitProps): JSX.Element {
       mana: 100,
       movementSpeed: 2.5,
       fieldOfView: 80,
+      icon: creepIcon,
     })
 
     groupRef.current?.position.set(...randomPos)

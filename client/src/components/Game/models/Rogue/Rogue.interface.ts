@@ -1,4 +1,5 @@
 import { MutableRefObject } from 'react'
+import { StaticImageData } from 'next/image'
 import { GroupProps } from '@react-three/fiber'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
@@ -19,6 +20,7 @@ export type GLTFResult = GLTF & {
 
 export interface RogueComponent {
   getGroupRef: () => MutableRefObject<THREE.Group | null>
+  getIcon: () => StaticImageData
 }
 
 export interface RogueProps {
