@@ -12,7 +12,7 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 ## Releases:
 
 <details>
-<summary>v0.1.2 - Prototype (2023-04-30)</summary>
+<summary>v0.1.2 - Prototype (2023-05-06)</summary>
 
 ### Bug fixes:
 
