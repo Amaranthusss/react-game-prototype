@@ -7,7 +7,7 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 ![Preview](/git/preview.jpg)
 
 | Legend: | 🐲 Front-End (client) |     | 🌐 Back-End (server) |
-| ------ | --------------------- | --- | -------------------- |
+| ------- | --------------------- | --- | -------------------- |
 
 ## Releases:
 
@@ -17,10 +17,14 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 ### Bug fixes:
 
 - 🐲 Moved canvas objects from the game store to React references
+- 🐲 The NavMesh is stored at the game store
+- 🐲 The position of each unit is updated at the units store
 
 ### New features:
 
-- 🐲 Target at the user interface
+- 🐲 The user interface shows the selected unit's stats
+- 🐲 Green ring around the selected unit
+- 🐲 Creep unit follows the player unit up to the attack range
 
 </details>
 

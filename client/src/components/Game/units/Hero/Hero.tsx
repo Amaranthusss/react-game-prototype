@@ -1,28 +1,35 @@
+import { Ring } from '@react-three/drei'
+
 import { useEffect, useRef, useState } from 'react'
 import { usePlayerControler } from './hooks/usePlayerController'
+import { useEntityVehicle } from '../hooks/useEntityVehicle'
+import { useUnitPosition } from '../hooks/useUnitPosition'
 import { useUnitsStore } from '@/store/units/useUnitsStore'
+import { useGameStore } from '@/store/game/useGameStore'
 import { useRefState } from '@/hooks/useRefState'
 import { useUITarget } from '../hooks/useUITarget'
-import { useFrame } from '@react-three/fiber'
 
 import * as THREE from 'three'
 import _ from 'lodash'
 
-import { CreateHero, FindUnit } from '@/store/units/interface'
-import { UpdateUnitParameter } from '@/store/units/interface'
-import { SimplePosition } from '@/interfaces/simplePosition'
 import { RogueComponent } from '../../models/Rogue/Rogue.interface'
+import { Specialisation } from '@/interfaces/specialisation'
+import { SimplePosition } from '@/interfaces/simplePosition'
+import { CreateHero } from '@/store/units/interface'
 import { HeroProps } from './Hero.interface'
 import { Rogue } from '../../models/Rogue/Rogue'
 import { Unit } from '@/interfaces/unit'
 
-import { Specialisation } from '@/interfaces/specialisation'
-import { Config } from '@/constants/config'
-
 export default function Hero({ groupProps, id, init }: HeroProps) {
   console.log('%cHero rendered', 'color: green')
 
+  const uiTargetId: string | undefined = useGameStore(
+    ({ uiTargetId }) => uiTargetId
+  )
+
   const [unitId] = useState<Unit['id']>(id ?? _.uniqueId())
+
+  const [initPos] = useState<SimplePosition>([0, -1, 0])
 
   const meshRef = useRef<THREE.Mesh | null>(null)
 
@@ -31,19 +38,15 @@ export default function Hero({ groupProps, id, init }: HeroProps) {
 
   const createHero: CreateHero = useUnitsStore(({ createHero }) => createHero)
 
-  const updateUnitParameter: UpdateUnitParameter = useUnitsStore(
-    ({ updateUnitParameter }) => updateUnitParameter
-  )
-
-  const findUnit: FindUnit = useUnitsStore(({ findUnit }) => findUnit)
-
   const { onUITarget } = useUITarget(unitId, groupProps)
+
+  const { initVehicle } = useEntityVehicle(unitId, meshRef, initPos)
 
   useEffect((): void => {
     createHero({
       id: unitId,
       name: 'Rogue',
-      position: [0, 0, 0],
+      position: initPos,
       specialisation: Specialisation.Agility,
       agility: 5,
       intellect: 5,
@@ -53,38 +56,26 @@ export default function Hero({ groupProps, id, init }: HeroProps) {
       health: 420,
       mana: 100,
       movementSpeed: 2.5,
-      fieldOfView: 60,
+      fieldOfView: 600,
       icon: getRogueComponent().getIcon(),
     })
-  }, [unitId, getRogueComponent, createHero])
 
+    initVehicle()
+    console.log(`%c[Hero #${unitId}] Initialized`, 'color: gray')
+  }, [unitId, initPos, getRogueComponent, createHero, initVehicle])
+
+  useUnitPosition(unitId)
   usePlayerControler(meshRef, init)
-
-  useFrame((): void => {
-    const prevPosition: SimplePosition =
-      findUnit(unitId)?.position ?? Config.defaultPlayerPosition
-
-    const worldPosition: THREE.Vector3 | undefined =
-      meshRef.current?.getWorldPosition?.(new THREE.Vector3(0, 0, 0))
-
-    if (worldPosition == null) {
-      return
-    }
-
-    const nextPosition = _.map(
-      [worldPosition.x, worldPosition.y, worldPosition.z],
-      (point: number): number => _.round(point, 2)
-    ) as SimplePosition
-
-    if (_.isEqual(prevPosition, nextPosition)) {
-      return
-    }
-
-    updateUnitParameter<'position'>(unitId, 'position', nextPosition)
-  })
 
   return (
     <mesh ref={meshRef}>
+      <Ring
+        args={[_.isEqual(unitId, uiTargetId) ? 1.5 : 0, 1.3]}
+        rotation={[Math.PI / 2, 0, 0]}
+      >
+        <meshStandardMaterial color={'green'} />
+      </Ring>
+
       <Rogue
         groupProps={{ ...groupProps, onClick: onUITarget }}
         componentCallback={setRogueComponent}

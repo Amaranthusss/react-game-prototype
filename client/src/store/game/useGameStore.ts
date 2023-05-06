@@ -14,6 +14,7 @@ export const useGameStore = create<GameStore>()(
         playerName: 'Amaranthus',
         uiTargetId: undefined,
         entityManager: new YUKA.EntityManager(),
+        navMesh: undefined,
 
         getVehicles: (ids?: Unit['id'][] | undefined): YUKA.Vehicle[] => {
           const { entityManager } = get()
@@ -50,6 +51,7 @@ export const useGameStore = create<GameStore>()(
 
         setFps: (fps: number) => set({ fps }),
         setUITargetId: (uiTargetId: Unit['id']) => set({ uiTargetId }),
+        setNavMesh: (navMesh: YUKA.NavMesh) => set({ navMesh }),
       }
     },
     { name: 'game-storage' }

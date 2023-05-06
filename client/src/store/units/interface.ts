@@ -12,6 +12,7 @@ export interface UnitsStore {
   updateUnitParameter: UpdateUnitParameter
   tryAutoFindTarget: TryAutoFindTarget
   findWeakestTarget: FindWeakestTarget
+  moveUnitToUnit: MoveUnitToUnit
   getDistanceBetweenUnits: GetDistanceBetweenUnits
   getUnitType: GetUnitType
 }
@@ -33,6 +34,12 @@ export type GetDistanceBetweenUnits = (
   idOfSecondUnit: Unit['id']
 ) => number
 export type GetUnitType = (unitId: Unit['id']) => UnitType | null
+export type MoveUnitToUnit = (
+  movingUnitId: Unit['id'],
+  targetUnitId: Unit['id'],
+  /** @default 'attackRange' */
+  distanceThreshold?: 'attackRange' | number
+) => void
 
 type defaultUnitValues =
   | 'lastUpdate'

@@ -2,7 +2,7 @@ import { createContext } from 'react'
 
 import { Context } from 'react'
 
-type ContextProps = null
+type EngineContext = null
 
-export const engineContext: Context<ContextProps> =
-  createContext<ContextProps>(null)
+export const engineContext: Context<EngineContext> =
+  createContext<EngineContext>(null)
