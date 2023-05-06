@@ -1,0 +1,45 @@
+@import '/src/styles/theme.scss';
+
+$borderWidth: 2px;
+$barHeight: 4px;
+
+.portrait {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.icon {
+  border: solid 1px gray;
+  width: 128px;
+  height: 128px;
+}
+
+.health {
+  bottom: -$borderWidth;
+  border: solid $borderWidth $emptyColor;
+  background-color: $emptyColor;
+  width: calc(100% - 2 * $borderWidth);
+  height: $barHeight;
+}
+
+.mana {
+  bottom: calc(-1 * ($barHeight + (2 * $borderWidth)));
+  border: solid $borderWidth $emptyColor;
+  background-color: $emptyColor;
+  width: calc(100% - 2 * $borderWidth);
+  height: $barHeight;
+}
+
+.bar {
+  height: $barHeight;
+}
+
+.health .bar {
+  background-color: rgb(0, 255, 0);
+}
+
+.mana .bar {
+  background-color: rgb(17, 0, 255);
+}

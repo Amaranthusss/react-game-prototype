@@ -1,16 +1,19 @@
+import { useGameStore } from '../game/useGameStore'
+
+import { transformBehaviors } from '@/utils/transformBehaviors'
 import { devtools } from 'zustand/middleware'
 import { create } from 'zustand'
 import * as THREE from 'three'
 import * as YUKA from 'yuka'
 import _ from 'lodash'
 
-import { useGameStore } from '../game/useGameStore'
-
 import { CreateUnitNewHero, CreateUnitNewUnit } from './interface'
 import { UnitsStore } from './interface'
 import { UnitType } from '@/interfaces/unitType'
 import { Unit } from '@/interfaces/unit'
 import { Hero } from '@/interfaces/hero'
+
+import { Config } from '@/constants/config'
 
 const getDefaultUnitValues = (
   newUnit: CreateUnitNewUnit | CreateUnitNewHero
@@ -41,11 +44,6 @@ const getDefaultUnitValues = (
     duration: newUnit.attack?.duration ?? defaultAttackDuration,
   }
 
-  const vehicle: YUKA.Vehicle = new YUKA.Vehicle()
-
-  vehicle.name = newUnit.id
-  useGameStore.getState().entityManager.add(vehicle)
-
   return {
     maxHealth: newUnit.health,
     maxMana: newUnit.mana,
@@ -63,7 +61,6 @@ export const useUnitsStore = create<UnitsStore>()(
     (set, get): UnitsStore => {
       return {
         list: new Map<Unit['id'], Unit | Hero>([]),
-        playerHeroId: null,
 
         findUnit: (idOfSearchedUnit: Unit['id']): Unit | Hero | null => {
           return get().list.get(idOfSearchedUnit) ?? null
@@ -100,12 +97,11 @@ export const useUnitsStore = create<UnitsStore>()(
         createHero: (newHero: CreateUnitNewHero): Unit['id'] => {
           const list: UnitsStore['list'] = get().list
           const findUnit: UnitsStore['findUnit'] = get().findUnit
-
-          const isDefinied: boolean = !_.isNull(findUnit(newHero.id))
-
           const playerName: string = useGameStore.getState().playerName
+          const isDefinied: boolean = !_.isNull(findUnit(newHero.id))
+          const isPlayerHero: boolean = _.isEqual(newHero.id, playerName)
 
-          if (isDefinied && !_.isEqual(newHero.id, playerName)) {
+          if (isDefinied && !isPlayerHero) {
             console.error(
               `${errorPath} / createHero()
 							\n Tried to create a new hero with used before ID ${newHero.id}
@@ -142,7 +138,7 @@ export const useUnitsStore = create<UnitsStore>()(
           stat: T,
           value: (Unit | Hero)[T]
         ): void => {
-          const { list, tryAutoFindTarget } = get()
+          const { list, tryAutoFindTarget, moveUnitToUnit } = get()
 
           const previousUnitData: Unit | Hero | undefined =
             list.get(idUnitToUpdate)
@@ -171,14 +167,122 @@ export const useUnitsStore = create<UnitsStore>()(
           set({ list })
 
           switch (stat) {
+            case 'target':
+              if (value === 'Amaranthus') // ToDo Only for tests 
+                moveUnitToUnit(previousUnitData.id, value as Unit['id'])
+              break
             case 'targets':
               tryAutoFindTarget(idUnitToUpdate)
               break
           }
         },
 
+        moveUnitToUnit: (
+          movingUnitId: Unit['id'],
+          targetUnitId: Unit['id'],
+          /** @default 'attackRange' */
+          distanceThreshold?: 'attackRange' | number
+        ) => {
+          const { findUnit, getDistanceBetweenUnits } = get()
+
+          const movingUnit: Unit | Hero | null = findUnit(movingUnitId)
+          const targetUnit: Unit | Hero | null = findUnit(targetUnitId)
+
+          const entityManager: YUKA.EntityManager =
+            useGameStore.getState().entityManager
+
+          const navMesh: YUKA.NavMesh | undefined =
+            useGameStore.getState().navMesh
+
+          const vehicle: YUKA.Vehicle | null = entityManager.getEntityByName(
+            movingUnitId
+          ) as YUKA.Vehicle | null
+
+          if (
+            _.isNull(vehicle) ||
+            _.isNull(movingUnit) ||
+            _.isNull(targetUnit) ||
+            _.isUndefined(navMesh)
+          ) {
+            console.error(
+              `${errorPath} / moveUnitToUnit()
+							\n Moving unit vehicle or Navigation mesh or Target unit could not be found`,
+              `\n Moving unit with ID ${movingUnitId} - vehicle:`,
+              vehicle,
+              `\n Moving unit with ID ${movingUnitId}:`,
+              movingUnit,
+              `\n Target unit with ID ${targetUnitId}:`,
+              targetUnit,
+              `\n Navigation mesh:`,
+              navMesh
+            )
+
+            return
+          }
+
+          if (
+            _.isUndefined(distanceThreshold) ||
+            distanceThreshold === 'attackRange'
+          ) {
+            distanceThreshold = movingUnit.attack.range
+          }
+
+          const { followPath } = transformBehaviors(vehicle.steering)
+
+          if (_.isNull(followPath)) {
+            console.error(
+              `${errorPath} / moveUnitToUnit()
+							\n Behaviors error`,
+              `\n Follow path:`,
+              followPath
+            )
+
+            return
+          }
+
+          const distanceBetweenUnits: number = getDistanceBetweenUnits(
+            movingUnitId,
+            targetUnitId
+          )
+
+          const isInRange: boolean = _.lte(
+            distanceBetweenUnits,
+            distanceThreshold
+          )
+
+          followPath.path.clear()
+          followPath.active = true
+
+          if (isInRange) {
+            // ToDo Find out why model's still moving
+            // ToDo forward when `active` is set as `false`
+            // `followPath.active = false` should be enough to stop vehicle
+
+            const from: YUKA.Vector3 = vehicle.position
+            const path: YUKA.Vector3[] = navMesh.findPath(from, from)
+
+            for (const point of path) {
+              followPath.path.add(point)
+            }
+          } else {
+            const from: YUKA.Vector3 = vehicle.position
+            const to: YUKA.Vector3 = new YUKA.Vector3(
+              targetUnit.position[0],
+              targetUnit.position[1],
+              targetUnit.position[2]
+            )
+
+            const path: YUKA.Vector3[] = navMesh.findPath(from, to)
+
+            for (const point of path) {
+              followPath.path.add(point)
+            }
+          }
+        },
+
         getPlayerHero: (): Hero | null => {
-          const { findUnit, playerHeroId } = get()
+          const { findUnit } = get()
+          const playerHeroId: string = useGameStore.getState().playerName
 
           if (_.isNull(playerHeroId)) {
             return null
@@ -191,6 +295,13 @@ export const useUnitsStore = create<UnitsStore>()(
           idOfFirstUnit: string,
           idOfSecondUnit: string
         ): number => {
+          if (
+            _.isEqual(idOfFirstUnit, Config.ignoredId) ||
+            _.isEqual(idOfSecondUnit, Config.ignoredId)
+          ) {
+            return -1
+          }
+
           const { findUnit, list } = get()
 
           const firstUnit: Unit | Hero | null = findUnit(idOfFirstUnit)
@@ -305,7 +416,7 @@ export const useUnitsStore = create<UnitsStore>()(
         },
       }
     },
-    { name: 'units-storage' }
+    { name: 'units-storage', serialize: { options: { map: true } } }
   )
 )
 

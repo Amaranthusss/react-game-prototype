@@ -1,3 +1,4 @@
+import { Specialisation } from './specialisation'
 import { Unit } from './unit'
 
 export interface Hero extends Unit {
@@ -9,5 +10,3 @@ export interface Hero extends Unit {
   agility: number
   specialisation: Specialisation
 }
-
-type Specialisation = keyof Pick<Hero, 'intellect' | 'agility' | 'strength'>

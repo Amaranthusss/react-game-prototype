@@ -1,10 +1,10 @@
 import { Environment } from './Environment/Environment'
 import { Lighting } from './Lighting/Lighting'
+import { Unit } from '../units/Unit/Unit'
 
 import { useUnitsRelations } from './hooks/useUnitsRelations'
 import { useEntityManager } from './hooks/useEntityManager'
-import { useUnitsStates } from './hooks/useUnitsStates'
-import { useCallback } from 'react'
+import { useMoveToTargets } from './hooks/useMoveToTargets'
 import { useGameStore } from '@/store/game/useGameStore'
 import { useNavMesh } from './hooks/useNavMesh'
 import { useFPS } from './hooks/useFPS'
@@ -13,34 +13,33 @@ import { lazy } from 'react'
 import _ from 'lodash'
 
 import { EngineProps } from './Engine.interface'
-import { ThreeEvent } from '@react-three/fiber'
 
 import { engineContext } from '@/components/Game/Engine/Engine.context'
 
-const Player = lazy(() => import('@/components/Game/units/Hero/Hero'))
+const PlayerHero = lazy(() => import('@/components/Game/units/Hero/Hero'))
 
-export function Engine({ children }: EngineProps) {
+export function Engine({ children, getCanvas }: EngineProps) {
   const playerName: string = useGameStore(({ playerName }) => playerName)
 
-  const { init, moveToPoint } = useNavMesh(playerName)
-
-  const onMoveToPoint = useCallback(
-    (event: ThreeEvent<MouseEvent>): void => {
-      moveToPoint(event)
-    },
-    [moveToPoint]
-  )
+  const { initNavMesh, onMoveToPoint } = useNavMesh(playerName, getCanvas)
 
   useFPS()
-  useUnitsStates()
+  useMoveToTargets()
   useEntityManager()
   useUnitsRelations()
 
   return (
     <engineContext.Provider value={null}>
-      <Player init={init} id={playerName} />
       <Environment onMoveToPoint={onMoveToPoint} />
       <Lighting />
+
+      <PlayerHero
+        init={initNavMesh}
+        id={playerName}
+        // groupProps={{ onClick: onUITarget }}
+      />
+
+      <Unit groupProps={{ onClick: (e) => console.log(e) }} />
 
       {children}
     </engineContext.Provider>

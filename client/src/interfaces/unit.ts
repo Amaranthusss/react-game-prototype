@@ -1,3 +1,4 @@
+import { StaticImageData } from 'next/image'
 import { SimplePosition } from './simplePosition'
 import { AttackType } from './attackType'
 import { ArmorType } from './armorType'
@@ -34,6 +35,7 @@ export interface Unit {
     model?: JSX.Element
   }
   bonus: { source: string; value: number; stat: BonusStatName }[]
+  icon: StaticImageData
 }
 
 type BonusStatName =

@@ -1,5 +1,5 @@
 export const engine = {
   unitsRelationsInterval: 500,
-  unitsStatesRefreshInterval: 500,
+  refreshTargetsPositionsInterval: 200,
   rangePrecision: 2,
 }

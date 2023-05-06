@@ -1,0 +1,33 @@
+@import '/src/styles/theme.scss';
+
+.container {
+  position: absolute;
+  bottom: 20px;
+  left: 0px;
+  right: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  width: calc(100vw - 2 * (267px - 20px));
+  max-width: 500px;
+	min-height: 165px;
+  background-color: $emptyColor;
+  padding: $interfacePadding;
+  font-size: $interfaceFontSize;
+  color: white;
+	border: solid 1px gray;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.container .info {
+  flex: 1;
+}
+
+.container .info .name {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+	margin-bottom: 8px;
+}

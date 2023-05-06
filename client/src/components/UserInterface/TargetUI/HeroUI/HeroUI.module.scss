@@ -1,0 +1,66 @@
+.level {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid 1px goldenrod;
+  padding-block: 4px;
+  margin-bottom: 8px;
+}
+
+.stats {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.stats .base {
+  display: flex;
+  flex-direction: column;
+	gap: 4px;
+}
+
+.stats .base .singleStat {
+  display: flex;
+  gap: 12px;
+}
+
+.stats .base .singleStat .text {
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.stats .base .singleStat .text .caption {
+  color: goldenrod;
+	font-weight: bold;
+}
+
+.stats .hero {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.stats .hero .primaryAttr {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stats .hero .values {
+  display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.stats .hero .values .caption {
+  color: goldenrod;
+	font-weight: bold;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  border: solid 1px gray;
+}

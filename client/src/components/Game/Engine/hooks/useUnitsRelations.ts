@@ -66,5 +66,3 @@ export function useUnitsRelations(): void {
     }
   }, [updateUnitsTargets])
 }
-
-const errorPath = `components / Game / Engine/ hooks / useUnitsRelations`

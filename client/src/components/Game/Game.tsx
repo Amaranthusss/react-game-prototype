@@ -5,15 +5,12 @@ import { Loading } from './Loading/Loading'
 import { Engine } from './Engine/Engine'
 import { Canvas } from '@react-three/fiber'
 import { Bloom } from '@react-three/postprocessing'
-import { Unit } from './units/Unit/Unit'
 
-import { useCallback } from 'react'
-import { useGameStore } from '@/store/game/useGameStore'
+import { useRefState } from '@/hooks/useRefState'
 
 import _ from 'lodash'
 
-import { SetCamera, SetRenderer, SetScene } from '@/store/game/interface'
-import { ThreeEvent } from '@react-three/fiber'
+import { GameCanvas } from './Game.interface'
 import { RootState } from '@react-three/fiber'
 
 import styles from './Game.module.scss'
@@ -21,27 +18,15 @@ import styles from './Game.module.scss'
 export function Game(): JSX.Element {
   console.log('%cGame rendered', 'color: green')
 
-  const onLetsAttackUnit = useCallback(
-    (event: ThreeEvent<MouseEvent>): void => {
-      console.log(event)
-    },
-    []
-  )
-
-  const setScene: SetScene = useGameStore(({ setScene }) => setScene)
-  const setCamera: SetCamera = useGameStore(({ setCamera }) => setCamera)
-  const setRenderer: SetRenderer = useGameStore(
-    ({ setRenderer }) => setRenderer
-  )
+  // * Canvas objects're too large to be stored in the game store
+  const { get: getCanvas, set: setCanvas } = useRefState<GameCanvas>()
 
   return (
     <div className={styles.container}>
       <Canvas
         shadows
         onCreated={({ gl, scene, camera }: RootState): void => {
-          setScene(scene)
-          setCamera(camera)
-          setRenderer(gl)
+          setCanvas({ scene, camera, renderer: gl })
         }}
       >
         <OrbitControls />
@@ -60,24 +45,22 @@ export function Game(): JSX.Element {
           speed={1}
         />
 
-        <Engine>
-          <Stage
-            intensity={0.5}
-            preset={'rembrandt'}
-            adjustCamera={1}
-            shadows={{
-              type: 'accumulative',
-              color: 'black',
-              colorBlend: 2,
-              opacity: 2,
-            }}
-            environment={'city'}
-          >
-            <Suspense fallback={<Loading />}>
-              <Unit groupProps={{ onContextMenu: onLetsAttackUnit }} />
-            </Suspense>
-          </Stage>
-        </Engine>
+        <Suspense fallback={<Loading />}>
+          <Engine getCanvas={getCanvas}>
+            <Stage
+              intensity={0.5}
+              preset={'rembrandt'}
+              adjustCamera={1}
+              shadows={{
+                type: 'accumulative',
+                color: 'black',
+                colorBlend: 2,
+                opacity: 2,
+              }}
+              environment={'city'}
+            />
+          </Engine>
+        </Suspense>
       </Canvas>
     </div>
   )
