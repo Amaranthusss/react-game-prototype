@@ -9,6 +9,7 @@ import _ from 'lodash'
 
 import { CreateUnitNewHero, CreateUnitNewUnit } from './interface'
 import { UnitsStore } from './interface'
+import { UnitState } from '@/interfaces/unitState'
 import { UnitType } from '@/interfaces/unitType'
 import { Unit } from '@/interfaces/unit'
 import { Hero } from '@/interfaces/hero'
@@ -23,7 +24,7 @@ const getDefaultUnitValues = (
   | 'maxMana'
   | 'bonus'
   | 'target'
-  | 'targets'
+  | 'neighborhood'
   | 'state'
   | 'attack'
   | 'lastUpdate'
@@ -50,8 +51,8 @@ const getDefaultUnitValues = (
     attack,
     bonus: [],
     target: null,
-    targets: [],
-    state: 'idle',
+    neighborhood: [],
+    state: UnitState.Idle,
     lastUpdate: new Date().getTime(),
   }
 }
@@ -168,10 +169,11 @@ export const useUnitsStore = create<UnitsStore>()(
 
           switch (stat) {
             case 'target':
-              if (value === 'Amaranthus') // ToDo Only for tests 
+              if (value === 'Amaranthus')
+                // ToDo Only for tests
                 moveUnitToUnit(previousUnitData.id, value as Unit['id'])
               break
-            case 'targets':
+            case 'neighborhood':
               tryAutoFindTarget(idUnitToUpdate)
               break
           }
@@ -183,7 +185,8 @@ export const useUnitsStore = create<UnitsStore>()(
           /** @default 'attackRange' */
           distanceThreshold?: 'attackRange' | number
         ) => {
-          const { findUnit, getDistanceBetweenUnits } = get()
+          const { findUnit, getDistanceBetweenUnits, updateUnitParameter } =
+            get()
 
           const movingUnit: Unit | Hero | null = findUnit(movingUnitId)
           const targetUnit: Unit | Hero | null = findUnit(targetUnitId)
@@ -264,6 +267,12 @@ export const useUnitsStore = create<UnitsStore>()(
             for (const point of path) {
               followPath.path.add(point)
             }
+
+            updateUnitParameter<'state'>(
+              movingUnitId,
+              'state',
+              UnitState.Attacking
+            )
           } else {
             const from: YUKA.Vector3 = vehicle.position
             const to: YUKA.Vector3 = new YUKA.Vector3(
@@ -277,6 +286,12 @@ export const useUnitsStore = create<UnitsStore>()(
             for (const point of path) {
               followPath.path.add(point)
             }
+
+            updateUnitParameter<'state'>(
+              movingUnitId,
+              'state',
+              UnitState.Walking
+            )
           }
         },
 
@@ -353,8 +368,12 @@ export const useUnitsStore = create<UnitsStore>()(
         },
 
         tryAutoFindTarget: (matchingUnitId: Unit['id']): void => {
-          const { findUnit, list, updateUnitParameter, findWeakestTarget } =
-            get()
+          const {
+            findUnit,
+            list,
+            updateUnitParameter,
+            findWeakestEnemyTarget,
+          } = get()
 
           const matchingUnit: Unit | Hero | null = findUnit(matchingUnitId)
 
@@ -370,13 +389,13 @@ export const useUnitsStore = create<UnitsStore>()(
           }
 
           const isNotBusy: boolean =
-            matchingUnit.state !== 'casting' &&
-            matchingUnit.state !== 'attacking' &&
-            matchingUnit.state !== 'dead'
+            matchingUnit.state !== UnitState.Casting &&
+            matchingUnit.state !== UnitState.Attacking &&
+            matchingUnit.state !== UnitState.Dead
 
           if (isNotBusy) {
             const nextIdOfTargetUnit: Unit['id'] =
-              findWeakestTarget(matchingUnitId)
+              findWeakestEnemyTarget(matchingUnitId)
 
             updateUnitParameter<'target'>(
               matchingUnitId,
@@ -386,26 +405,29 @@ export const useUnitsStore = create<UnitsStore>()(
           }
         },
 
-        findWeakestTarget: (idOfMatchingUnit: Unit['id']) => {
+        findWeakestEnemyTarget: (idOfMatchingUnit: Unit['id']) => {
           const { list, findUnit } = get()
 
-          const targets: Unit['id'][] | null =
-            findUnit(idOfMatchingUnit)?.targets ?? null
+          const targetingUnit: Unit | Hero | null = findUnit(idOfMatchingUnit)
 
-          if (_.isNull(targets)) {
-            console.error(`${errorPath} / findWeakestTarget()
-						\n Matching unit with ID ${idOfMatchingUnit} couldn't be found
-						\n So targets are unkown`)
+          if (_.isNull(targetingUnit)) {
+            console.error(`${errorPath} / findWeakestEnemyTarget()
+						\n Matching unit with ID ${idOfMatchingUnit} couldn't be found`)
+
             return ''
           }
+
+          const neighborhood: Unit['id'][] | null =
+            targetingUnit.neighborhood ?? null
 
           const getTargetWithLowestHealth = (): Unit['id'] => {
             return _.chain(Array.from(list))
               .map((unit) => unit[1])
-              .sortBy(({ mana }) => mana)
+              .filter(({ player }) => !_.isEqual(targetingUnit.player, player))
+              .sortBy(({ health }) => health)
               .reverse()
               .find(({ id }: Unit | Hero): boolean =>
-                _.some(targets, (targetId: string): boolean => {
+                _.some(neighborhood, (targetId: string): boolean => {
                   return _.isEqual(targetId, id)
                 })
               )

@@ -20,14 +20,14 @@ import { HeroProps } from './Hero.interface'
 import { Rogue } from '../../models/Rogue/Rogue'
 import { Unit } from '@/interfaces/unit'
 
-export default function Hero({ groupProps, id, init }: HeroProps) {
+export default function Hero({ groupProps, playerName, init }: HeroProps) {
   console.log('%cHero rendered', 'color: green')
 
   const uiTargetId: string | undefined = useGameStore(
     ({ uiTargetId }) => uiTargetId
   )
 
-  const [unitId] = useState<Unit['id']>(id ?? _.uniqueId())
+  const [unitId] = useState<Unit['id']>(playerName ?? _.uniqueId())
 
   const [initPos] = useState<SimplePosition>([0, -1, 0])
 
@@ -58,11 +58,12 @@ export default function Hero({ groupProps, id, init }: HeroProps) {
       movementSpeed: 2.5,
       fieldOfView: 600,
       icon: getRogueComponent().getIcon(),
+      player: playerName ?? '_player',
     })
 
     initVehicle()
     console.log(`%c[Hero #${unitId}] Initialized`, 'color: gray')
-  }, [unitId, initPos, getRogueComponent, createHero, initVehicle])
+  }, [unitId, playerName, initPos, getRogueComponent, createHero, initVehicle])
 
   useUnitPosition(unitId)
   usePlayerControler(meshRef, init)

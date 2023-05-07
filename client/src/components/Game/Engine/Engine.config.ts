@@ -1,5 +1,6 @@
 export const engine = {
   unitsRelationsInterval: 500,
-  refreshTargetsPositionsInterval: 200,
+  refreshUnitsPositionsInterval: 50,
   rangePrecision: 2,
+  aiPlayerName: '_AI',
 }

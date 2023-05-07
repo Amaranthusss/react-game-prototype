@@ -2,7 +2,7 @@ import { Environment } from './Environment/Environment'
 import { Lighting } from './Lighting/Lighting'
 import { Unit } from '../units/Unit/Unit'
 
-import { useUnitsRelations } from './hooks/useUnitsRelations'
+import { useNeighborhood } from './hooks/useNeighborhood'
 import { useEntityManager } from './hooks/useEntityManager'
 import { useMoveToTargets } from './hooks/useMoveToTargets'
 import { useGameStore } from '@/store/game/useGameStore'
@@ -24,9 +24,9 @@ export function Engine({ children, getCanvas }: EngineProps) {
   const { initNavMesh, onMoveToPoint } = useNavMesh(playerName, getCanvas)
 
   useFPS()
+  useNeighborhood()
   useMoveToTargets()
   useEntityManager()
-  useUnitsRelations()
 
   return (
     <engineContext.Provider value={null}>
@@ -35,7 +35,7 @@ export function Engine({ children, getCanvas }: EngineProps) {
 
       <PlayerHero
         init={initNavMesh}
-        id={playerName}
+        playerName={playerName}
         // groupProps={{ onClick: onUITarget }}
       />
 

@@ -12,6 +12,18 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 ## Releases:
 
 <details>
+<summary>v0.1.3 - Prototype (2023-05-x)</summary>
+
+### Bug fixes:
+
+- 🐲 Extended unit interface by player name
+- 🐲 Auto finding the weakest target only selects enemy units
+
+### New features:
+
+</details>
+
+<details>
 <summary>v0.1.2 - Prototype (2023-05-06)</summary>
 
 ### Bug fixes:

@@ -58,7 +58,7 @@ export function useEntityVehicle(
       new YUKA.ObstacleAvoidanceBehavior()
 
     followPathBehavior.active = false
-    followPathBehavior.nextWaypointDistance = 1 //ToDo Lets test this parameter
+    followPathBehavior.nextWaypointDistance = 0.1 //ToDo Lets test this parameter
 
     obstacleAvoidanceBehavior.active = true
 

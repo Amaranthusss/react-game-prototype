@@ -11,7 +11,7 @@ import { Unit } from '@/interfaces/unit'
 
 import { engine } from '../Engine.config'
 
-export function useUnitsRelations(): void {
+export function useNeighborhood(): void {
   const list: Map<Unit['id'], Unit | Hero> = useUnitsStore(
     ({ list }) => list,
     shallow
@@ -25,10 +25,10 @@ export function useUnitsRelations(): void {
     ({ getDistanceBetweenUnits }) => getDistanceBetweenUnits
   )
 
-  const updateUnitsTargets = useCallback((): void => {
+  const updateUnitsNeighborhood = useCallback((): void => {
     // * For each unit in the game
     list.forEach(({ id, attack, fieldOfView }): void => {
-      const nextTargets: Unit['targets'] = []
+      const nextNeighborhood: Unit['neighborhood'] = []
 
       // * Match range to each other unit in the game
       list.forEach(({ id: targetId }): void => {
@@ -47,22 +47,22 @@ export function useUnitsRelations(): void {
         )
 
         if (isInRangeToPull) {
-          nextTargets.push(targetId)
+          nextNeighborhood.push(targetId)
         }
       })
 
-      updateUnitParameter<'targets'>(id, 'targets', nextTargets)
+      updateUnitParameter<'neighborhood'>(id, 'neighborhood', nextNeighborhood)
     })
   }, [updateUnitParameter, list, getDistanceBetweenUnits])
 
   useEffect((): (() => void) => {
     const unitsRelationsDetection: NodeJS.Timer = setInterval(
-      updateUnitsTargets,
+      updateUnitsNeighborhood,
       engine.unitsRelationsInterval
     )
 
     return (): void => {
       clearInterval(unitsRelationsDetection)
     }
-  }, [updateUnitsTargets])
+  }, [updateUnitsNeighborhood])
 }

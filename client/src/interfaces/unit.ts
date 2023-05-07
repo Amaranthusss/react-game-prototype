@@ -15,8 +15,8 @@ export interface Unit {
   fieldOfView: number
   position: SimplePosition
   target: Unit['id'] | null
-  /** All units' IDs in range */
-  targets: Unit['id'][]
+  /** All units' IDs in range (friendly and enemy) */
+  neighborhood: Unit['id'][]
   state: UnitState
   lastUpdate: number
   defence: {
@@ -35,6 +35,7 @@ export interface Unit {
     model?: JSX.Element
   }
   bonus: { source: string; value: number; stat: BonusStatName }[]
+  player: string
   icon: StaticImageData
 }
 

@@ -47,6 +47,7 @@ export function StatsUI(): JSX.Element {
         <p>Target of target: {targetUnit?.target ?? 'None'}</p>
         <p>Target X: {_.round(targetUnit?.position?.[0] ?? 0, 2)}</p>
         <p>Target Z: {_.round(targetUnit?.position?.[2] ?? 0, 2)}</p>
+        <p>Target state: {targetUnit?.state ?? '-'}</p>
       </span>
       <p>State: {playerHero.state}</p>
     </div>

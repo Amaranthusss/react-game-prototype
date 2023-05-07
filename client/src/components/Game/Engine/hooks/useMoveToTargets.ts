@@ -29,7 +29,7 @@ export function useMoveToTargets(): void {
   useEffect((): (() => void) => {
     const unitsRelationsDetection: NodeJS.Timer = setInterval(
       trigger,
-      engine.refreshTargetsPositionsInterval
+      engine.refreshUnitsPositionsInterval
     )
 
     return (): void => {

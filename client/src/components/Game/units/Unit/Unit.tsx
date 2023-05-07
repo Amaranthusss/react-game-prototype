@@ -1,4 +1,4 @@
-import { Sphere, Ring } from '@react-three/drei'
+import { Ring, Cone } from '@react-three/drei'
 
 import { useEffect, useRef, useState } from 'react'
 import { useEntityVehicle } from '../hooks/useEntityVehicle'
@@ -16,6 +16,8 @@ import { UnitProps } from './Unit.interface'
 import { Unit } from '@/interfaces/unit'
 
 import creepIcon from '@/assets/icons/creep.jpg'
+
+import { engine } from '../../Engine/Engine.config'
 
 export function Unit({ groupProps }: UnitProps): JSX.Element {
   console.log('%cUnit rendered', 'color: green')
@@ -46,13 +48,14 @@ export function Unit({ groupProps }: UnitProps): JSX.Element {
       id: unitId,
       name: 'Creep',
       position: initPos,
-      attack: { baseDamage: 20, range: 40, speed: 2, type: 'normal' },
+      attack: { baseDamage: 20, range: 100, speed: 2, type: 'normal' },
       defence: { dodge: 0, type: 'medium', value: 2 },
       health: 420,
       mana: 100,
       movementSpeed: 2.5,
       fieldOfView: 150,
       icon: creepIcon,
+      player: engine.aiPlayerName,
     })
 
     initVehicle()
@@ -71,9 +74,9 @@ export function Unit({ groupProps }: UnitProps): JSX.Element {
           <meshStandardMaterial color={'green'} />
         </Ring>
 
-        <Sphere castShadow>
+        <Cone castShadow rotation={[Math.PI / 2, 0, 0]}>
           <meshStandardMaterial color={'goldenrod'} />
-        </Sphere>
+        </Cone>
       </mesh>
     </group>
   )

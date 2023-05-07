@@ -1,1 +1,7 @@
-export type UnitState = 'idle' | 'attacking' | 'walking' | 'casting' | 'dead'
+export enum UnitState {
+  Idle,
+  Attacking,
+  Walking,
+  Casting,
+  Dead,
+}

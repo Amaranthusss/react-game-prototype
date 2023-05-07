@@ -11,7 +11,7 @@ export interface UnitsStore {
   removeUnit: RemoveUnit
   updateUnitParameter: UpdateUnitParameter
   tryAutoFindTarget: TryAutoFindTarget
-  findWeakestTarget: FindWeakestTarget
+  findWeakestEnemyTarget: FindWeakestEnemyTarget
   moveUnitToUnit: MoveUnitToUnit
   getDistanceBetweenUnits: GetDistanceBetweenUnits
   getUnitType: GetUnitType
@@ -23,7 +23,9 @@ export type CreateUnit = (newUnit: CreateUnitNewUnit) => Unit['id']
 export type CreateHero = (newHero: CreateUnitNewHero) => Hero['id']
 export type RemoveUnit = (idOfUnitToRemove: Unit['id']) => void
 export type TryAutoFindTarget = (idOfMatchingUnit: Unit['id']) => void
-export type FindWeakestTarget = (idOfMatchingUnit: Unit['id']) => Unit['id']
+export type FindWeakestEnemyTarget = (
+  idOfMatchingUnit: Unit['id']
+) => Unit['id']
 export type UpdateUnitParameter = <T extends keyof Unit>(
   idUnitToUpdate: Unit['id'],
   stat: T,
@@ -48,7 +50,7 @@ type defaultUnitValues =
   | 'maxMana'
   | 'bonus'
   | 'target'
-  | 'targets'
+  | 'neighborhood'
   | 'state'
 
 type defaultHeroValues =
@@ -58,7 +60,7 @@ type defaultHeroValues =
   | 'maxMana'
   | 'bonus'
   | 'target'
-  | 'targets'
+  | 'neighborhood'
   | 'state'
   | 'level'
   | 'experience'
