@@ -1,8 +1,11 @@
 import { createContext } from 'react'
 
+import { BulletsCollectorComponent } from './BulletsCollector/BulletsCollector.interface'
 import { Context } from 'react'
 
-type EngineContext = null
+export interface EngineContext {
+  bulletsCollector: BulletsCollectorComponent | undefined
+}
 
 export const engineContext: Context<EngineContext> =
-  createContext<EngineContext>(null)
+  createContext<EngineContext>({ bulletsCollector: undefined })

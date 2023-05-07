@@ -1,4 +1,4 @@
-import { Temple } from '../../models/Temple/Temple'
+import { Temple } from '../../../../models/Temple/Temple'
 
 import { useGLTF } from '@react-three/drei'
 

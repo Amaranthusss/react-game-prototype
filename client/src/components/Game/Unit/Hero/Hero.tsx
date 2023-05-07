@@ -11,17 +11,15 @@ import { useUITarget } from '../hooks/useUITarget'
 import * as THREE from 'three'
 import _ from 'lodash'
 
-import { RogueComponent } from '../../models/Rogue/Rogue.interface'
+import { RogueComponent } from '../../../../models/Rogue/Rogue.interface'
 import { Specialisation } from '@/interfaces/specialisation'
 import { SimplePosition } from '@/interfaces/simplePosition'
 import { CreateHero } from '@/store/units/interface'
 import { HeroProps } from './Hero.interface'
-import { Rogue } from '../../models/Rogue/Rogue'
+import { Rogue } from '../../../../models/Rogue/Rogue'
 import { Unit } from '@/interfaces/unit'
 
 export default function Hero({ groupProps, playerName, init }: HeroProps) {
-  console.log('%cHero rendered', 'color: green')
-
   const [unitId] = useState<Unit['id']>(playerName ?? _.uniqueId())
 
   const [initPos] = useState<SimplePosition>([0, -1, 0])

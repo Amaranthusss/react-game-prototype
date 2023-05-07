@@ -12,7 +12,7 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 ## Releases:
 
 <details>
-<summary>v0.1.3 - Prototype (2023-05-x)</summary>
+<summary>v0.1.3 - Prototype (2023-05-07)</summary>
 
 ### Bug fixes:
 
@@ -22,6 +22,8 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 ### New features:
 
 - 🐲 The creep unit can trigger attack event
+- 🐲 Created a bullets collector
+- 🐲 The creep unit shoots to the player unit
 
 </details>
 

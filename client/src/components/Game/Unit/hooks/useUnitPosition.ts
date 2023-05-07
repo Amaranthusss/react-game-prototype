@@ -1,5 +1,5 @@
-import { useGameStore } from '@/store/game/useGameStore'
 import { useUnitsStore } from '@/store/units/useUnitsStore'
+import { useGameStore } from '@/store/game/useGameStore'
 import { useFrame } from '@react-three/fiber'
 
 import * as YUKA from 'yuka'

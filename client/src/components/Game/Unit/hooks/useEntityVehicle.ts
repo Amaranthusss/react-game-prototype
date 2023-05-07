@@ -1,3 +1,4 @@
+import { useEntitySync } from './useEntitySync'
 import { useGameStore } from '@/store/game/useGameStore'
 import { useCallback } from 'react'
 
@@ -18,19 +19,7 @@ export function useEntityVehicle(
     ({ entityManager }) => entityManager
   )
 
-  const sync = useCallback(
-    (
-      entity: YUKA.GameEntity,
-      renderComponent: THREE.Mesh<
-        THREE.BufferGeometry,
-        THREE.Material | THREE.Material[]
-      >
-    ) => {
-      //@ts-ignore YUKA.Matrix4 / THREE.Matrix4 differences
-      renderComponent.matrix.copy(entity.worldMatrix)
-    },
-    []
-  )
+  const { sync } = useEntitySync()
 
   const initVehicle = useCallback((): void => {
     const isEntityDefinied: boolean = _.isNull(
@@ -46,6 +35,7 @@ export function useEntityVehicle(
         `\n Mesh:`,
         mesh
       )
+
       return
     }
 
@@ -80,4 +70,4 @@ export function useEntityVehicle(
   return { initVehicle }
 }
 
-const errorPath = `components / Game / units / hooks / useEntityVehicle`
+const errorPath = `components / Game / vehicles / hooks / useEntityVehicle`

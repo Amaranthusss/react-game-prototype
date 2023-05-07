@@ -199,26 +199,28 @@ export const useUnitsStore = create<UnitsStore>()(
             movingUnitId
           ) as YUKA.Vehicle | null
 
-          if (
-            _.isNull(vehicle) ||
-            _.isNull(movingUnit) ||
-            _.isNull(targetUnit) ||
-            _.isUndefined(navMesh)
-          ) {
-            console.error(
-              `${errorPath} / moveUnitToUnit()
-							\n Moving unit vehicle or Navigation mesh or Target unit could not be found`,
-              `\n Moving unit with ID ${movingUnitId} - vehicle:`,
-              vehicle,
-              `\n Moving unit with ID ${movingUnitId}:`,
-              movingUnit,
-              `\n Target unit with ID ${targetUnitId}:`,
-              targetUnit,
-              `\n Navigation mesh:`,
-              navMesh
+          if (_.isNull(vehicle)) {
+            return console.error(
+              `${errorPath} / moveUnitToUnit()\nMoving unit vehicle could not be found`
             )
+          }
 
-            return
+          if (_.isNull(movingUnit)) {
+            return console.error(
+              `${errorPath} / moveUnitToUnit()\n Moving unit could not be found`
+            )
+          }
+
+          if (_.isNull(targetUnit)) {
+            return console.error(
+              `${errorPath} / moveUnitToUnit()\nTarget unit could not be found`
+            )
+          }
+
+          if (_.isUndefined(navMesh)) {
+            return console.error(
+              `${errorPath} / moveUnitToUnit()\nNavigation mesh could not be found`
+            )
           }
 
           if (
