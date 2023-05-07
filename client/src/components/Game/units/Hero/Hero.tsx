@@ -5,7 +5,6 @@ import { usePlayerControler } from './hooks/usePlayerController'
 import { useEntityVehicle } from '../hooks/useEntityVehicle'
 import { useUnitPosition } from '../hooks/useUnitPosition'
 import { useUnitsStore } from '@/store/units/useUnitsStore'
-import { useGameStore } from '@/store/game/useGameStore'
 import { useRefState } from '@/hooks/useRefState'
 import { useUITarget } from '../hooks/useUITarget'
 
@@ -23,10 +22,6 @@ import { Unit } from '@/interfaces/unit'
 export default function Hero({ groupProps, playerName, init }: HeroProps) {
   console.log('%cHero rendered', 'color: green')
 
-  const uiTargetId: string | undefined = useGameStore(
-    ({ uiTargetId }) => uiTargetId
-  )
-
   const [unitId] = useState<Unit['id']>(playerName ?? _.uniqueId())
 
   const [initPos] = useState<SimplePosition>([0, -1, 0])
@@ -38,7 +33,7 @@ export default function Hero({ groupProps, playerName, init }: HeroProps) {
 
   const createHero: CreateHero = useUnitsStore(({ createHero }) => createHero)
 
-  const { onUITarget } = useUITarget(unitId, groupProps)
+  const { uiTargetId, onUITarget } = useUITarget(unitId, groupProps)
 
   const { initVehicle } = useEntityVehicle(unitId, meshRef, initPos)
 

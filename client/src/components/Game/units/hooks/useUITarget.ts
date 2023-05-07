@@ -12,6 +12,10 @@ export function useUITarget(
   unitId: Unit['id'],
   groupProps: GroupProps | undefined
 ) {
+  const uiTargetId: string | undefined = useGameStore(
+    ({ uiTargetId }) => uiTargetId
+  )
+
   const setUITargetId: SetUITargetId = useGameStore(
     ({ setUITargetId }) => setUITargetId
   )
@@ -27,5 +31,5 @@ export function useUITarget(
     [unitId, groupProps, setUITargetId]
   )
 
-  return { onUITarget }
+  return { onUITarget, uiTargetId }
 }

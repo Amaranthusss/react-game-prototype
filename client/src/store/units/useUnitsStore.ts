@@ -14,7 +14,7 @@ import { UnitType } from '@/interfaces/unitType'
 import { Unit } from '@/interfaces/unit'
 import { Hero } from '@/interfaces/hero'
 
-import { Config } from '@/constants/config'
+import { engine } from '@/components/Game/Engine/Engine.config'
 
 const getDefaultUnitValues = (
   newUnit: CreateUnitNewUnit | CreateUnitNewHero
@@ -29,8 +29,6 @@ const getDefaultUnitValues = (
   | 'attack'
   | 'lastUpdate'
 > => {
-  const defaultAttackDuration: number = 500
-
   if (_.lt(newUnit.attack.range, 0)) {
     console.error(
       `${errorPath} / getDefaultUnitValues()
@@ -42,7 +40,7 @@ const getDefaultUnitValues = (
 
   const attack: Unit['attack'] = {
     ...newUnit.attack,
-    duration: newUnit.attack?.duration ?? defaultAttackDuration,
+    duration: newUnit.attack?.duration ?? engine.defaultAttackDuration,
   }
 
   return {
@@ -311,8 +309,8 @@ export const useUnitsStore = create<UnitsStore>()(
           idOfSecondUnit: string
         ): number => {
           if (
-            _.isEqual(idOfFirstUnit, Config.ignoredId) ||
-            _.isEqual(idOfSecondUnit, Config.ignoredId)
+            _.isEqual(idOfFirstUnit, engine.ignoredId) ||
+            _.isEqual(idOfSecondUnit, engine.ignoredId)
           ) {
             return -1
           }

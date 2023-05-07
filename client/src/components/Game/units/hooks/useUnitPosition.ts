@@ -9,7 +9,7 @@ import { FindUnit, UpdateUnitParameter } from '@/store/units/interface'
 import { SimplePosition } from '@/interfaces/simplePosition'
 import { Unit } from '@/interfaces/unit'
 
-import { Config } from '@/constants/config'
+import { engine } from '../../Engine/Engine.config'
 
 export function useUnitPosition(unitId: Unit['id']): void {
   const entityManager: YUKA.EntityManager = useGameStore(
@@ -24,7 +24,7 @@ export function useUnitPosition(unitId: Unit['id']): void {
 
   useFrame((): void => {
     const prevPosition: SimplePosition =
-      findUnit(unitId)?.position ?? Config.defaultPlayerPosition
+      findUnit(unitId)?.position ?? engine.defaultPlayerPosition
 
     const vehicle: YUKA.GameEntity | null =
       entityManager.getEntityByName(unitId)

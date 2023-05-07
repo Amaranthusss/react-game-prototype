@@ -21,6 +21,8 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 
 ### New features:
 
+- 🐲 The creep unit can trigger attack event
+
 </details>
 
 <details>
@@ -106,4 +108,4 @@ This repository contains prototype of a simple 3D game based on the ThreeJS.
 
 ## Planned technologies for a next steps:
 
-SocketIO; NodeJS; ExpressJS; Prisma; tRPC; MongoDB; Bun;
+ExpressJS; Prisma; tRPC; MongoDB; Bun;
